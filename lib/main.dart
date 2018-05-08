@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
+import './pages/home.dart';
 
-void main() => runApp(new SelfNote());
+void main() => runApp(
+  new MaterialApp(
+    home: new SelfNote()
+  )
+);
 
-class SelfNote extends StatelessWidget {
+class SelfNote extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Welcome to Flutter',
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Welcome to Flutter AppBar'),
-        ),
-        body: new Center(
-          child: new Text('Hello World'),
-        ),
-      ),
-    );
-  }
+  HomePage createState() => new HomePage();
 }
+
