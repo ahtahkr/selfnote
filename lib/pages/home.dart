@@ -2,16 +2,34 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import './note.dart';
 import './category.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class HomePage extends State<SelfNote> {
 
   var ok;
-  String title;
+  CategoryPage categoryPage;
+  NotePage notePage;
+  String title, databaseDirectory, databaseName;
+
+  setPages() async {
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+
+    this.databaseDirectory = documentsDirectory.path;
+    this.databaseName = "selfnote.db";
+
+    this.categoryPage = new CategoryPage(this.databaseDirectory, this.databaseName);
+    this.notePage = new NotePage(this.databaseDirectory, this.databaseName);
+
+    this.title = "Home";
+    this.ok = this.notePage;
+    this.title  = "Note";
+  }
 
   assignNotePage()
   {
     setState(() {
-      ok = NotePage();
+      ok = this.notePage;
       title  = "Note";
     });
   }
@@ -19,16 +37,14 @@ class HomePage extends State<SelfNote> {
   assignCategoryPage()
   {
     setState(() {
-      ok = CategoryPage();
+      ok = this.categoryPage;
       title  = "Category";
     });
   }
 
   HomePage()
   {
-    title = "Home";
-    ok = NotePage();
-    title  = "Note";
+    this.setPages();
   }
 
   void openNotePage()
