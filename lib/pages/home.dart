@@ -9,7 +9,6 @@ class HomePage extends State<SelfNote> {
 
   var ok;
   CategoryPage categoryPage;
-  NotePage notePage;
   String title, databaseDirectory, databaseName;
 
   setPages() async {
@@ -19,17 +18,14 @@ class HomePage extends State<SelfNote> {
     this.databaseName = "selfnote.db";
 
     this.categoryPage = new CategoryPage(this.databaseDirectory, this.databaseName);
-    this.notePage = new NotePage(this.databaseDirectory, this.databaseName);
 
     this.title = "Home";
-    this.ok = this.notePage;
-    this.title  = "Note";
   }
 
   assignNotePage()
   {
     setState(() {
-      ok = this.notePage;
+      ok = new NoteWidget();
       title  = "Note";
     });
   }

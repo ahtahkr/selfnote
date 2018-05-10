@@ -1,5 +1,4 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:flutter/material.dart';
 import 'dart:async';
 
 final String tableNote = "note";

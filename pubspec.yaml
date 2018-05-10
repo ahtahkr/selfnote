@@ -4,6 +4,7 @@ description: A new Flutter project.
 dependencies:
   sqflite: any
   path_provider: any
+  english_words: ^3.1.0
   flutter:
     sdk: flutter
 
