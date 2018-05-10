@@ -68,7 +68,7 @@ class HomePage extends State<SelfNote> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(title: new Text(title),),
+      appBar: new AppBar(title: new Text((title == null) ? "Home" : title),),
       drawer: new Drawer(
         child: new ListView(
           children: <Widget>[
