@@ -43,20 +43,20 @@ class HomePage extends State<SelfNote> {
     this.setPages();
   }
 
-  void openNotePage()
+  void openNotePage(BuildContext context)
   {
     assignNotePage();
     Navigator.of(context).pop();
     //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new NotePage()));
   }
 
-  void openCategoryPage()
+  void openCategoryPage(BuildContext context)
   {
     assignCategoryPage();
     Navigator.of(context).pop();
   }
 
-  void closeSideMenu()
+  void closeSideMenu(BuildContext context)
   {
     Navigator.of(context).pop();
   }
@@ -69,14 +69,14 @@ class HomePage extends State<SelfNote> {
         child: new ListView(
           children: <Widget>[
             new ListTile(
-              title: new Text("Note"), onTap: openNotePage,
+              title: new Text("Note"), onTap: () { openNotePage(context); },
             ),
             new ListTile(
-                title: new Text("Category"), onTap: openCategoryPage
+                title: new Text("Category"), onTap: () { openCategoryPage(context); }
             ),
             new Divider(),
             new ListTile(
-                title: new Text("Close"), trailing: new Icon(Icons.cancel), onTap: closeSideMenu,
+                title: new Text("Close"), trailing: new Icon(Icons.cancel), onTap: () { closeSideMenu(context); },
             )
           ],
         )
