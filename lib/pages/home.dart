@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import './note.dart';
 import './category.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 class HomePage extends State<SelfNote> {
-
   var ok;
   CategoryPage categoryPage;
   String title, databaseDirectory, databaseName;
@@ -17,70 +17,75 @@ class HomePage extends State<SelfNote> {
     this.databaseDirectory = documentsDirectory.path;
     this.databaseName = "selfnote.db";
 
-    this.categoryPage = new CategoryPage(this.databaseDirectory, this.databaseName);
+    this.categoryPage =
+        new CategoryPage(this.databaseDirectory, this.databaseName);
 
     this.title = "Home";
   }
 
-  assignNotePage()
-  {
+  assignNotePage() {
     setState(() {
-      ok = new NoteWidget();
-      title  = "Note";
+      ok = new NoteWidget(join(this.databaseDirectory, this.databaseName));
+      title = "Note";
     });
   }
 
-  assignCategoryPage()
-  {
+  assignCategoryPage() {
     setState(() {
       ok = this.categoryPage;
-      title  = "Category";
+      title = "Category";
     });
   }
 
-  HomePage()
-  {
+  HomePage() {
     this.setPages();
   }
 
-  void openNotePage(BuildContext context)
-  {
+  void openNotePage(BuildContext context) {
     assignNotePage();
     Navigator.of(context).pop();
     //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new NotePage()));
   }
 
-  void openCategoryPage(BuildContext context)
-  {
+  void openCategoryPage(BuildContext context) {
     assignCategoryPage();
     Navigator.of(context).pop();
   }
 
-  void closeSideMenu(BuildContext context)
-  {
+  void closeSideMenu(BuildContext context) {
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(title: new Text((title == null) ? "Home" : title),),
-      drawer: new Drawer(
-        child: new ListView(
-          children: <Widget>[
-            new ListTile(
-              title: new Text("Note"), onTap: () { openNotePage(context); },
-            ),
-            new ListTile(
-                title: new Text("Category"), onTap: () { openCategoryPage(context); }
-            ),
-            new Divider(),
-            new ListTile(
-                title: new Text("Close"), trailing: new Icon(Icons.cancel), onTap: () { closeSideMenu(context); },
-            )
-          ],
-        )
+      appBar: new AppBar(
+        title: new Text((title == null) ? "Home" : title),
       ),
+      drawer: new Drawer(
+          child: new ListView(
+        children: <Widget>[
+          new ListTile(
+            title: new Text("Note"),
+            onTap: () {
+              openNotePage(context);
+            },
+          ),
+          new ListTile(
+              title: new Text("Category"),
+              onTap: () {
+                openCategoryPage(context);
+              }),
+          new Divider(),
+          new ListTile(
+            title: new Text("Close"),
+            trailing: new Icon(Icons.cancel),
+            onTap: () {
+              closeSideMenu(context);
+            },
+          )
+        ],
+      )),
       body: ok,
     );
   }
