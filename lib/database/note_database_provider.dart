@@ -39,7 +39,7 @@ class Note {
 
   Note.fromMap(Map map) {
     print("Note. from Map.");
-    map.forEach((k,v) => print("Note. from Map. " + k + ":" + v.toString()));
+    map.forEach((k, v) => print("Note. from Map. " + k + ":" + v.toString()));
     id = map[columnId];
     message = map[columnMessage];
     createdOn = DateTime.parse(map[columnCreatedOn]);
@@ -73,9 +73,8 @@ class NoteDatabaseProvider {
     return this.open(this.databaseFullPath).then((res) {
       if (res) {
         Note note = new Note();
-        this.insert(note)
-                      .then((note) {
-           return true;
+        this.insert(note).then((note) {
+          return true;
         }).catchError((e) {
           print(e.toString());
           return false;
@@ -94,14 +93,14 @@ class NoteDatabaseProvider {
     if (this.databaseFullPath != null && this.databaseFullPath.isNotEmpty) {
       return openDatabase(path, version: 1,
           onCreate: (Database database, int version) {
-            db = database;
-            db.execute(this.getCreateTableQuery().toString()).then((_) {
-              return true;
-            }).catchError((e) {
-              print(e.toString());
-              return false;
-            });
-          }).then((database) {
+        db = database;
+        db.execute(this.getCreateTableQuery().toString()).then((_) {
+          return true;
+        }).catchError((e) {
+          print(e.toString());
+          return false;
+        });
+      }).then((database) {
         db = database;
         return true;
       }).catchError((e) {
@@ -109,74 +108,66 @@ class NoteDatabaseProvider {
         return false;
       });
     } else {
-      return new Future(() { return false; });
+      return new Future(() {
+        return false;
+      });
     }
   }
-
-
 
   Future<List<Note>> get() {
     print("Note db provider");
     print("Note db provider. get.");
     try {
-      return db.query(tableNote,
-          columns: [
+      return this.open(this.databaseFullPath).then((res) {
+        if (res) {
+          return db.query(tableNote, columns: [
             columnId,
             columnMessage,
             columnCreatedOn,
             columnUpdatedOn,
             columnNotificationTime,
             columnNotification
-          ]
-      ).then((res) {
-        print("Note db provider. get. then " + res.length.toString());
-        if (res.length > 0) {
-          List<Note> notes = new List<Note>();
-          for (int a = 0; a < res.length; a++) {
-            notes.add(new Note.fromMap(res[a]));
-          }
-          return notes;
+          ]).then((res) {
+            print("Note db provider. get. then " + res.length.toString());
+            if (res.length > 0) {
+              List<Note> notes = new List<Note>();
+              for (int a = 0; a < res.length; a++) {
+                notes.add(new Note.fromMap(res[a]));
+              }
+              return notes;
+            } else {
+              return new List<Note>();
+            }
+          }).catchError((e) {
+            print("Note db provider. get. catchError. " + e.toString());
+            print(e.toString());
+            return new List<Note>();
+          });
         } else {
           return new List<Note>();
         }
-      }).catchError((e) {
-        print("Note db provider. get. catch. " + e.toString());
-        print(e.toString());
-        return new List<Note>();
       });
     } catch (e) {
+      print("Note db provider. get. catch. " + e.toString());
+      print("Note db provider. get. catch. databaseFullPath:" +
+          this.databaseFullPath);
+      print("Note db provider. get. catch. db:" + db.toString());
+      print("Note db provider. get. catch. db.path:" + db.path);
       Note _note = new Note();
       _note.message = "database get failed.";
-      return new Future(() { return List<Note>(); });
+      return new Future(() {
+        return List<Note>();
+      });
     }
   }
 
   Future<Note> insert(Note note) {
-    return db.insert(tableNote, note.toMap())
-              .then((res) {
-                note.id = res;
-                return note;
+    return db.insert(tableNote, note.toMap()).then((res) {
+      note.id = res;
+      return note;
     }).catchError((e) {
       print(e.toString());
       return note;
     });
   }
-
-  /*
-    Future get() {
-    return db.query(tableNote,
-        columns: [columnId, columnMessage, columnCreatedOn, columnUpdatedOn, columnNotificationTime, columnNotification]
-    ).then((res) {
-      if (res.length > 0) {
-        List<Map> maps = new List<Map>();
-        return new Note.fromMap(maps.first);
-      } else {
-        return new List<Map>();
-      }
-    }).catchError((e) {
-      print(e.toString());
-      return new List<Map>();
-    });
-  }
-  */
 }
