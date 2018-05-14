@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../database/note_database_provider.dart';
+import './new_note.dart';
 
 class NoteWidget extends StatefulWidget {
   final String databaseFullPath;
@@ -50,6 +51,7 @@ class NoteWidgetState extends State<NoteWidget> {
   int _counter = 0;
 
   void _incrementCounter() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context) => new NewNoteWidget()));
     setState(() {
       this._counter++;
     });
