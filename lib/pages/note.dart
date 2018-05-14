@@ -47,10 +47,22 @@ class NoteWidgetState extends State<NoteWidget> {
       ),
     );
   }
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      this._counter++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      appBar: new AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: new Text("You have pressed the button $_counter times."),
+      ),
       body: Container(
         padding: EdgeInsets.all(10.0),
         child: Column(
@@ -65,6 +77,11 @@ class NoteWidgetState extends State<NoteWidget> {
             ))
           ],
         ),
+      ),
+      floatingActionButton: new FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: new Icon(Icons.add),
       ),
     );
   }
