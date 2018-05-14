@@ -50,8 +50,14 @@ class NoteWidgetState extends State<NoteWidget> {
   }
   int _counter = 0;
 
-  void _incrementCounter() {
-    Navigator.push(context, new MaterialPageRoute(builder: (context) => new NewNoteWidget()));
+  void _updateNote() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context) => new NewNoteWidget()))
+    .then((result) {
+      if (result != null && result is bool) {
+        print('_incrementCounter. Result: ' + result.toString());
+      }
+    });
+
     setState(() {
       this._counter++;
     });
@@ -81,7 +87,7 @@ class NoteWidgetState extends State<NoteWidget> {
         ),
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _updateNote,
         tooltip: 'Increment',
         child: new Icon(Icons.add),
       ),

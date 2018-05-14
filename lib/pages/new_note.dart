@@ -11,12 +11,12 @@ class NewNoteWidgetState extends State<NewNoteWidget> {
 
   void _close()
   {
-      Navigator.pop(context);
+      Navigator.pop(context, false);
   }
 
   void _save()
   {
-    Navigator.pop(context);
+    Navigator.pop(context, true);
   }
 
   @override
