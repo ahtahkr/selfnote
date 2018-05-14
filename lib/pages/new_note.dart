@@ -24,6 +24,7 @@ class NewNoteWidgetState extends State<NewNoteWidget> {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("This is the new note widget."),
+        automaticallyImplyLeading: false,
       ),
       body: new Center(
       child: Column(
