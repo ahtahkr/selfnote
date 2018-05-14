@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
+import 'dart:convert';
 
 final String tableNote = "note";
 final String columnId = "id";
@@ -14,6 +15,10 @@ class Note {
   String message;
   DateTime createdOn, updatedOn, notificationTime;
   bool notification;
+
+  String toString() {
+    return "{id:$id, message:$message, createdOn:$createdOn, updatedOn:$updatedOn, notification:$notification, notificationTime:$notificationTime";
+  }
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
@@ -70,44 +75,52 @@ class NoteDatabaseProvider {
   }
 
   Future<bool> setUpDatabase() {
-    return this.open(this.databaseFullPath).then((res) {
-      if (res) {
-        Note note = new Note();
-        this.insert(note).then((note) {
+    print("NoteDBProvider. SetUpDatabase.");
+    return this.get().then((res) {
+      if (res != null) {
+        if (res.length == 0) {
+          print("NoteDBProvider. SetUpDatabase. Note Table is empty.");
+          Note note = new Note();
+          return this.insert(note).then((note) {
+            print("NoteDBProvider. SetUpDatabase. Insert successful.");
+            return true;
+          }).catchError((e) {
+            print(e.toString());
+            return false;
+          });
+        } else {
+          print("NoteDBProvider. SetUpDatabase. Note Table is not empty");
           return true;
-        }).catchError((e) {
-          print(e.toString());
-          return false;
-        });
+        }
       } else {
-        print("setUpDatabase. Open Database returned false.");
+        print("NoteDBProvider. SetUpDatabase. Get() returned null." +
+            res.toString());
         return false;
       }
-    }).catchError((e) {
-      print(e.toString());
-      return false;
     });
   }
 
-  Future<bool> open(String path) {
+  Future<bool> open() {
+    print("NoteDBProvider. Open.");
     if (this.databaseFullPath != null && this.databaseFullPath.isNotEmpty) {
-      return openDatabase(path, version: 1,
+      return openDatabase(this.databaseFullPath, version: 1,
           onCreate: (Database database, int version) {
         db = database;
         db.execute(this.getCreateTableQuery().toString()).then((_) {
-          return true;
+          print("NoteDBProvider. Open. Create table Successful.");
         }).catchError((e) {
-          print(e.toString());
-          return false;
+          print("NoteDBProvider. Open. Error: " + e.toString());
         });
       }).then((database) {
         db = database;
+        print("NoteDBProvider. Open. database assigned. db.path: " + db.path);
         return true;
       }).catchError((e) {
-        print(e.toString());
+        print("NoteDBProvider. Open. Error: " + e.toString());
         return false;
       });
     } else {
+      print("NoteDBProvider. Open. DatbaseFullPath variable not assigned yet.");
       return new Future(() {
         return false;
       });
@@ -117,56 +130,38 @@ class NoteDatabaseProvider {
   Future<List<Note>> get() {
     print("Note db provider");
     print("Note db provider. get.");
-    try {
-      return this.open(this.databaseFullPath).then((res) {
-        if (res) {
-          return db.query(tableNote, columns: [
-            columnId,
-            columnMessage,
-            columnCreatedOn,
-            columnUpdatedOn,
-            columnNotificationTime,
-            columnNotification
-          ]).then((res) {
-            print("Note db provider. get. then " + res.length.toString());
-            if (res.length > 0) {
-              List<Note> notes = new List<Note>();
-              for (int a = 0; a < res.length; a++) {
-                notes.add(new Note.fromMap(res[a]));
-              }
-              return notes;
-            } else {
-              return new List<Note>();
-            }
-          }).catchError((e) {
-            print("Note db provider. get. catchError. " + e.toString());
-            print(e.toString());
-            return new List<Note>();
-          });
-        } else {
-          return new List<Note>();
+    return db.query(tableNote, columns: [
+      columnId,
+      columnMessage,
+      columnCreatedOn,
+      columnUpdatedOn,
+      columnNotificationTime,
+      columnNotification
+    ]).then((res) {
+      print("Note db provider. get. then " + res.length.toString());
+      if (res.length > 0) {
+        List<Note> notes = new List<Note>();
+        for (int a = 0; a < res.length; a++) {
+          notes.add(new Note.fromMap(res[a]));
         }
-      });
-    } catch (e) {
-      print("Note db provider. get. catch. " + e.toString());
-      print("Note db provider. get. catch. databaseFullPath:" +
-          this.databaseFullPath);
-      print("Note db provider. get. catch. db:" + db.toString());
-      print("Note db provider. get. catch. db.path:" + db.path);
-      Note _note = new Note();
-      _note.message = "database get failed.";
-      return new Future(() {
-        return List<Note>();
-      });
-    }
+        return notes;
+      } else {
+        return new List<Note>();
+      }
+    }).catchError((e) {
+      print("Note db provider. get. catchError. " + e.toString());
+      return new List<Note>();
+    });
   }
 
   Future<Note> insert(Note note) {
+    print ("NoteDBProvider. Insert. note: " + note.toString());
     return db.insert(tableNote, note.toMap()).then((res) {
       note.id = res;
+      print ("NoteDBProvider. Insert. Successful. " + note.toString());
       return note;
     }).catchError((e) {
-      print(e.toString());
+      print ("NoteDBProvider. Insert. Unsuccessful. Error: " + e.toString());
       return note;
     });
   }

@@ -22,10 +22,18 @@ class NoteWidgetState extends State<NoteWidget> {
   @override
   void initState() {
     super.initState();
-    this.noteDatabaseProvider.get().then((res) {
-      setState(() {
-        this.notes = res;
-      });
+    this.noteDatabaseProvider.open().then((res) {
+      if (res) {
+        this.noteDatabaseProvider.setUpDatabase().then((res_1){
+          if (res_1) {
+            this.noteDatabaseProvider.get().then((res) {
+              setState(() {
+                this.notes = res;
+              });
+            });
+          }
+        });
+      }
     });
   }
 

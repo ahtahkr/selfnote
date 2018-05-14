@@ -1,9 +1,7 @@
-
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class AppDatabase
-{
+class AppDatabase {
   String databaseName;
   String databaseDirectory;
   String databaseFullPath;
@@ -29,5 +27,4 @@ class AppDatabase
   String getDatabaseFullPath() {
     return this.databaseFullPath.toString();
   }
-
 }

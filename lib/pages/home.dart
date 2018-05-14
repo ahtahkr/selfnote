@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import './note.dart';
 import './category.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as _path;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
@@ -25,7 +25,7 @@ class HomePage extends State<SelfNote> {
 
   assignNotePage() {
     setState(() {
-      ok = new NoteWidget(join(this.databaseDirectory, this.databaseName));
+      ok = new NoteWidget(_path.join(this.databaseDirectory, this.databaseName));
       title = "Note";
     });
   }
