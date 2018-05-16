@@ -43,8 +43,8 @@ class Note {
   }
 
   Note.fromMap(Map map) {
-    print("Note. from Map.");
-    map.forEach((k, v) => print("Note. from Map. " + k + ":" + v.toString()));
+    //print("Note. from Map.");
+    //map.forEach((k, v) => print("Note. from Map. " + k + ":" + v.toString()));
     id = map[columnId];
     message = map[columnMessage];
     createdOn = DateTime.parse(map[columnCreatedOn]);
@@ -164,6 +164,59 @@ class NoteDatabaseProvider {
       print("NoteDBProvider. Insert. Unsuccessful. Error: " + e.toString());
       return note;
     });
+  }
+
+  Future<Note> getNote(int id) async {
+    if (id != null) {
+      print("NoteDBProvider. getNote. id: " + id.toString());
+      return db.query(tableNote,
+          columns: [columnId, columnMessage, columnCreatedOn, columnUpdatedOn, columnNotification, columnNotificationTime],
+          where: "$columnId = ?",
+          whereArgs: [id]).then((result) {
+            print(result.toString());
+        if (result.length > 0) {
+          return new Note.fromMap(result.first);
+        } else {
+          return null;
+        }
+      });
+    } else {
+      print("NoteDBProvider. getNote. id is null. id: " + id.toString());
+      return null;
+    }
+  }
+
+  Future<int> update(Note note) {
+    print("NoteDBProvider. update. got: " + note.toString());
+    return db.update(tableNote, note.toMap(),
+        where: "$columnId = ?", whereArgs: [note.id])
+    .then((res) { /*res = 1. if update successful.*/ print("NoteDBProvider. update. after update: " + res.toString()); return res;})
+    .catchError((e) {print(e.toString()); return -1;});
+  }
+
+  Future<Note> insertUpdate(Note note) {
+    return this.getNote(note.id).then((res) {
+      print("NoteDBProvider. insertUpdate. got: " + res.toString());
+      if (res != null && res is Note) {
+        return this.update(note).then((res_1) {
+          print("NoteDBProvider. insertUpdate. update: " + res_1.toString());
+
+          return note;
+        }).catchError((e) {
+          print(e.toString());
+          note.id = -1;
+          return note;
+        });
+      } else {
+        this.insert(note).then((res_one) {
+          print("NoteDBProvider. insertUpdate. insert: " + res_one.toString());
+          return res_one;
+        }).catchError((e) {
+          print(e.toString());
+          return null;
+        });
+      }
+    }).catchError((e) {print(e.toString()); return null;});
   }
 }
 
