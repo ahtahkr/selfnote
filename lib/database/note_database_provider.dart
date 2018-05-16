@@ -35,7 +35,7 @@ class Note {
   }
 
   Note() {
-    this.message = "This is a Sample Note.";
+    this.message = "";
     this.createdOn = new DateTime.now();
     this.updatedOn = new DateTime.now();
     this.notificationTime = new DateTime.now();
@@ -208,7 +208,7 @@ class NoteDatabaseProvider {
           return note;
         });
       } else {
-        this.insert(note).then((res_one) {
+        return this.insert(note).then((res_one) {
           print("NoteDBProvider. insertUpdate. insert: " + res_one.toString());
           return res_one;
         }).catchError((e) {
