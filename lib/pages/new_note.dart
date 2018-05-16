@@ -4,12 +4,18 @@ import 'dart:math' as math;
 
 class NewNoteWidget extends StatefulWidget {
   final NoteDatabaseProvider _noteDatabaseProvider;
+  final Note _note;
 
-  NewNoteWidget(NoteDatabaseProvider noteDatabaseProvider)
-      : this._noteDatabaseProvider = noteDatabaseProvider;
+  NewNoteWidget(NoteDatabaseProvider noteDatabaseProvider, Note note)
+      : this._noteDatabaseProvider = noteDatabaseProvider
+        , this._note = note {
+
+    print('new note widget. ' + this._note.toString());
+  }
+
 
   @override
-  createState() => new NewNoteWidgetState(this._noteDatabaseProvider);
+  createState() => new NewNoteWidgetState(this._noteDatabaseProvider, this._note);
 }
 
 class NewNoteWidgetState extends State<NewNoteWidget>
@@ -17,6 +23,7 @@ class NewNoteWidgetState extends State<NewNoteWidget>
   TextEditingController _textEditController;
   NoteDatabaseProvider _noteDatabaseProvider;
   AnimationController _controller;
+  Note note;
 
   static const List<IconData> icons = const [
     Icons.save,
@@ -24,8 +31,10 @@ class NewNoteWidgetState extends State<NewNoteWidget>
     Icons.keyboard_hide
   ];
 
-  NewNoteWidgetState(NoteDatabaseProvider noteDatabaseProvider) {
+  NewNoteWidgetState(NoteDatabaseProvider noteDatabaseProvider, Note note) {
     this._noteDatabaseProvider = noteDatabaseProvider;
+    this.note = note;
+    print('new note widget state. ' + this.note.toString());
   }
 
   void _cancel() {
@@ -34,10 +43,14 @@ class NewNoteWidgetState extends State<NewNoteWidget>
 
   void _save() {
     print(_textEditController.value.text.toString());
-    Note note = new Note();
-    note.message = _textEditController.value.text.toString();
-    this._noteDatabaseProvider.insert(note).then((new_note) {
-      Navigator.pop(context, new_note);
+    this.note.message = _textEditController.value.text.toString();
+    this._noteDatabaseProvider.insertUpdate(this.note).then((new_note) {
+      print("_save" + new_note.toString());
+      if (new_note.id == -1) {
+        Navigator.pop(context, null);
+      } else {
+        Navigator.pop(context, new_note);
+      }
     });
   }
 
@@ -54,7 +67,9 @@ class NewNoteWidgetState extends State<NewNoteWidget>
   _function(int index) {
     if (index != null) {
       if (index == 2) {
+        String mes = this._textEditController.value.text;
         FocusScope.of(context).requestFocus(new FocusNode());
+        this._textEditController.text = mes;
       } else if (index == 0) {
         this._save();
       } else if (index == 1) {
@@ -68,6 +83,14 @@ class NewNoteWidgetState extends State<NewNoteWidget>
   Widget build(BuildContext context) {
     Color backgroundColor = Theme.of(context).cardColor;
     Color foregroundColor = Theme.of(context).accentColor;
+
+    InputDecoration inputDecoration;
+    if (note.message != null && note.message.length > 0) {
+      this._textEditController.text = note.message.toString();
+    } else {
+      inputDecoration = new InputDecoration(hintText: 'Enter Description');
+    }
+
     return new Scaffold(
         appBar: new AppBar(
           title: new Text("This is the new note widget."),
@@ -76,7 +99,7 @@ class NewNoteWidgetState extends State<NewNoteWidget>
         body: new SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: new TextField(
-            decoration: new InputDecoration(hintText: 'Enter Description'),
+            decoration: inputDecoration,
             maxLines: null,
             autofocus: true,
             controller: _textEditController,

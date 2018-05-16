@@ -38,17 +38,30 @@ class NoteWidgetState extends State<NoteWidget> {
     });
   }
 
-  void _updateNote() {
+  void _updateNote(Note note) {
+    print('_updateNote. ' + note.toString());
     Navigator
         .push(
             context,
             new MaterialPageRoute(
                 builder: (context) =>
-                    new NewNoteWidget(this.noteDatabaseProvider)))
+                    new NewNoteWidget(this.noteDatabaseProvider, note)))
         .then((result) {
       if (result != null && result is Note && result.message.length > 0) {
         setState(() {
-          this.notes.add(result);
+
+          bool contains = false;
+          for (int a = 0; a < this.notes.length; a++) {
+            if (this.notes[a].id == result.id) {
+              print("updatenote. id found. id:" + this.notes[a].id.toString() + " : " + result.id.toString());
+              this.notes[a].message = result.message;
+              contains = true;
+            }
+            if (a >= (this.notes.length-1) && !contains) {
+              print("updatenote. id not found.");
+                  this.notes.add(result);
+            }
+          }
         });
       }
     });
@@ -58,6 +71,7 @@ class NoteWidgetState extends State<NoteWidget> {
     return new Container(
         decoration: boxDecoration,
         child: new ListTile(
+          onTap: () { this._updateNote(_note); },
           dense: true,
           title: new Text(
             ((_note.message != null && _note.message.isNotEmpty)
@@ -84,7 +98,7 @@ class NoteWidgetState extends State<NoteWidget> {
         },
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: _updateNote,
+        onPressed: () { _updateNote(new Note()); },
         tooltip: 'Increment',
         child: new Icon(Icons.add),
       ),
