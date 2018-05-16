@@ -26,16 +26,30 @@ class NewNoteWidgetState extends State<NewNoteWidget> {
         title: new Text("This is the new note widget."),
         automaticallyImplyLeading: false,
       ),
-      body: new Center(
-      child: Column(
-    children: <Widget>[
-      new RaisedButton(onPressed: _save,
-        child: const Text("Save"),
-        color: Colors.green,),
-        new RaisedButton(onPressed: _close,
-          child: const Text("Cancel"),
-          color: Colors.red,)
-      ]))
+      body:
+      new SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+      child: new TextField(
+        decoration: new InputDecoration(
+          hintText: 'Enter Description'
+        ),
+        maxLines: null,
+        keyboardType: TextInputType.multiline,
+        autofocus: true,
+      ))
+    ,
+        bottomNavigationBar: new BottomAppBar(
+      child: new Row(
+        children: <Widget>[
+          new RaisedButton(onPressed: _save,
+              child: const Text("Save"),
+              color: Colors.green),
+          new RaisedButton(onPressed: _close,
+              child: const Text("Cancel"),
+              color: Colors.red)
+        ],
+      ),
+    )
     );
   }
 }
