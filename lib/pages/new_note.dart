@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import '../database/note_database_provider.dart';
 
 class NewNoteWidget extends StatefulWidget {
-  NoteDatabaseProvider _noteDatabaseProvider;
+  final NoteDatabaseProvider _noteDatabaseProvider;
 
-  NewNoteWidget(NoteDatabaseProvider noteDatabaseProvider) {
-    this._noteDatabaseProvider = noteDatabaseProvider;
-  }
+  NewNoteWidget(NoteDatabaseProvider noteDatabaseProvider)
+    : this._noteDatabaseProvider = noteDatabaseProvider;
+
   @override
   createState() => new NewNoteWidgetState(this._noteDatabaseProvider);
 }
@@ -41,6 +41,17 @@ class NewNoteWidgetState extends State<NewNoteWidget> {
     _textEditController = new TextEditingController();
   }
 
+  _onTap() {
+    print("tap down ");
+    FocusScope.of(context).requestFocus(new FocusNode());
+  }
+
+  /*_onTapDown(TapDownDetails details) {
+    var x = details.globalPosition.dx;
+    var y = details.globalPosition.dy;
+    print("tap down " + x.toString() + ", " + y.toString());
+  }*/
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -49,6 +60,9 @@ class NewNoteWidgetState extends State<NewNoteWidget> {
         automaticallyImplyLeading: false,
       ),
       body:
+          new ListView(
+            children: <Widget>[
+
       new SingleChildScrollView(
         scrollDirection: Axis.vertical,
       child: new TextField(
@@ -56,10 +70,15 @@ class NewNoteWidgetState extends State<NewNoteWidget> {
           hintText: 'Enter Description'
         ),
         maxLines: null,
-        keyboardType: TextInputType.multiline,
         autofocus: true,
         controller: _textEditController,
-      ))
+      ),
+      ), new GestureDetector(
+        onTap: () => _onTap(),
+        /*onTapDown: (TapDownDetails details) => _onTapDown(details),*/
+      )
+            ],
+          )
     ,
         bottomNavigationBar: new BottomAppBar(
       child: new Row(
