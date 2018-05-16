@@ -77,6 +77,7 @@ class NoteWidgetState extends State<NoteWidget> {
             ((_note.message != null && _note.message.isNotEmpty)
                 ? _note.message
                 : "Undefined"),
+            maxLines: 5,
           ),
         ));
   }
