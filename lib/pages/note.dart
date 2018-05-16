@@ -25,7 +25,7 @@ class NoteWidgetState extends State<NoteWidget> {
     super.initState();
     this.noteDatabaseProvider.open().then((res) {
       if (res) {
-        this.noteDatabaseProvider.setUpDatabase().then((res_1){
+        this.noteDatabaseProvider.setUpDatabase().then((res_1) {
           if (res_1) {
             this.noteDatabaseProvider.get().then((res) {
               setState(() {
@@ -39,8 +39,13 @@ class NoteWidgetState extends State<NoteWidget> {
   }
 
   void _updateNote() {
-    Navigator.push(context, new MaterialPageRoute(builder: (context) => new NewNoteWidget(this.noteDatabaseProvider)))
-    .then((result) {
+    Navigator
+        .push(
+            context,
+            new MaterialPageRoute(
+                builder: (context) =>
+                    new NewNoteWidget(this.noteDatabaseProvider)))
+        .then((result) {
       if (result != null && result is Note && result.message.length > 0) {
         setState(() {
           this.notes.add(result);
@@ -51,37 +56,33 @@ class NoteWidgetState extends State<NoteWidget> {
 
   Widget _buildRow(Note _note, BoxDecoration boxDecoration) {
     return new Container(
-      decoration: boxDecoration,
+        decoration: boxDecoration,
         child: new ListTile(
-      dense: true,
-      title: new Text(
-
-        ((_note.message != null && _note.message.isNotEmpty)
-            ? _note.message
-            : "Undefined"),
-      ),
-    )
-    );
+          dense: true,
+          title: new Text(
+            ((_note.message != null && _note.message.isNotEmpty)
+                ? _note.message
+                : "Undefined"),
+          ),
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       body: ListView.builder(
-              padding: EdgeInsets.all(10.0),
-              itemCount: notes.length,
-
-              itemBuilder: (BuildContext context, int index) {
-                BoxDecoration boxDecoration;
-                if (index%2 == 0) {
-                  boxDecoration = new BoxDecoration(color: Colors.grey[200]);
-                } else {
-                  boxDecoration = new BoxDecoration(color: Colors.transparent);
-                }
-                return _buildRow(notes[index], boxDecoration);
-              },
-            )
-            ,
+        padding: EdgeInsets.all(10.0),
+        itemCount: notes.length,
+        itemBuilder: (BuildContext context, int index) {
+          BoxDecoration boxDecoration;
+          if (index % 2 == 0) {
+            boxDecoration = new BoxDecoration(color: Colors.grey[200]);
+          } else {
+            boxDecoration = new BoxDecoration(color: Colors.transparent);
+          }
+          return _buildRow(notes[index], boxDecoration);
+        },
+      ),
       floatingActionButton: new FloatingActionButton(
         onPressed: _updateNote,
         tooltip: 'Increment',

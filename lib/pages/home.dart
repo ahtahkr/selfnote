@@ -25,7 +25,8 @@ class HomePage extends State<SelfNote> {
 
   assignNotePage() {
     setState(() {
-      ok = new NoteWidget(_path.join(this.databaseDirectory, this.databaseName));
+      ok =
+          new NoteWidget(_path.join(this.databaseDirectory, this.databaseName));
       title = "Note";
     });
   }

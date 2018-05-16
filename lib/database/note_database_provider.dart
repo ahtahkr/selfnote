@@ -155,13 +155,13 @@ class NoteDatabaseProvider {
   }
 
   Future<Note> insert(Note note) {
-    print ("NoteDBProvider. Insert. note: " + note.toString());
+    print("NoteDBProvider. Insert. note: " + note.toString());
     return db.insert(tableNote, note.toMap()).then((res) {
       note.id = res;
-      print ("NoteDBProvider. Insert. Successful. " + note.toString());
+      print("NoteDBProvider. Insert. Successful. " + note.toString());
       return note;
     }).catchError((e) {
-      print ("NoteDBProvider. Insert. Unsuccessful. Error: " + e.toString());
+      print("NoteDBProvider. Insert. Unsuccessful. Error: " + e.toString());
       return note;
     });
   }
