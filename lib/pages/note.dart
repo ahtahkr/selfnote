@@ -40,6 +40,7 @@ class NoteWidgetState extends State<NoteWidget> {
 
   Widget _buildRow(Note _note) {
     return new ListTile(
+
       title: new Text(
         ((_note.message != null && _note.message.isNotEmpty)
             ? _note.message
@@ -51,15 +52,13 @@ class NoteWidgetState extends State<NoteWidget> {
   int _counter = 0;
 
   void _updateNote() {
-    Navigator.push(context, new MaterialPageRoute(builder: (context) => new NewNoteWidget()))
+    Navigator.push(context, new MaterialPageRoute(builder: (context) => new NewNoteWidget(this.noteDatabaseProvider)))
     .then((result) {
-      if (result != null && result is bool) {
-        print('_incrementCounter. Result: ' + result.toString());
+      if (result != null && result is Note && result.message.length > 0) {
+        setState(() {
+          this.notes.add(result);
+        });
       }
-    });
-
-    setState(() {
-      this._counter++;
     });
   }
 

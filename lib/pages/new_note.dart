@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
+import '../database/note_database_provider.dart';
 
 class NewNoteWidget extends StatefulWidget {
+  NoteDatabaseProvider _noteDatabaseProvider;
 
+  NewNoteWidget(NoteDatabaseProvider noteDatabaseProvider) {
+    this._noteDatabaseProvider = noteDatabaseProvider;
+  }
   @override
-  createState() => new NewNoteWidgetState();
+  createState() => new NewNoteWidgetState(this._noteDatabaseProvider);
 }
 
 
 class NewNoteWidgetState extends State<NewNoteWidget> {
+  TextEditingController _textEditController;
+  NoteDatabaseProvider _noteDatabaseProvider;
+
+  NewNoteWidgetState(NoteDatabaseProvider noteDatabaseProvider) {
+    this._noteDatabaseProvider = noteDatabaseProvider;
+  }
 
   void _close()
   {
@@ -16,7 +27,18 @@ class NewNoteWidgetState extends State<NewNoteWidget> {
 
   void _save()
   {
-    Navigator.pop(context, true);
+    print(_textEditController.value.text.toString());
+    Note note = new Note();
+    note.message = _textEditController.value.text.toString();
+    this._noteDatabaseProvider.insert(note).then((new_note) {
+      Navigator.pop(context, new_note);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _textEditController = new TextEditingController();
   }
 
   @override
@@ -36,6 +58,7 @@ class NewNoteWidgetState extends State<NewNoteWidget> {
         maxLines: null,
         keyboardType: TextInputType.multiline,
         autofocus: true,
+        controller: _textEditController,
       ))
     ,
         bottomNavigationBar: new BottomAppBar(
