@@ -38,19 +38,6 @@ class NoteWidgetState extends State<NoteWidget> {
     });
   }
 
-  Widget _buildRow(Note _note) {
-    return new ListTile(
-
-      title: new Text(
-        ((_note.message != null && _note.message.isNotEmpty)
-            ? _note.message
-            : "Undefined"),
-        style: _biggerFont,
-      ),
-    );
-  }
-  int _counter = 0;
-
   void _updateNote() {
     Navigator.push(context, new MaterialPageRoute(builder: (context) => new NewNoteWidget(this.noteDatabaseProvider)))
     .then((result) {
@@ -62,29 +49,39 @@ class NoteWidgetState extends State<NoteWidget> {
     });
   }
 
+  Widget _buildRow(Note _note, BoxDecoration boxDecoration) {
+    return new Container(
+      decoration: boxDecoration,
+        child: new ListTile(
+      dense: true,
+      title: new Text(
+
+        ((_note.message != null && _note.message.isNotEmpty)
+            ? _note.message
+            : "Undefined"),
+      ),
+    )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: new Text("You have pressed the button $_counter times."),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(10.0),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-                child: ListView.builder(
+      body: ListView.builder(
               padding: EdgeInsets.all(10.0),
               itemCount: notes.length,
+
               itemBuilder: (BuildContext context, int index) {
-                return _buildRow(notes[index]);
+                BoxDecoration boxDecoration;
+                if (index%2 == 0) {
+                  boxDecoration = new BoxDecoration(color: Colors.grey[200]);
+                } else {
+                  boxDecoration = new BoxDecoration(color: Colors.transparent);
+                }
+                return _buildRow(notes[index], boxDecoration);
               },
-            ))
-          ],
-        ),
-      ),
+            )
+            ,
       floatingActionButton: new FloatingActionButton(
         onPressed: _updateNote,
         tooltip: 'Increment',
