@@ -52,9 +52,21 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
   _function(int index) {
     if (index != null) {
       if (index == 0) {
-        Navigator.push(context, new MaterialPageRoute(builder: (context) => new NoteEditWidget(this._note)));
+        Navigator.push(context, new MaterialPageRoute(builder: (context) => new NoteEditWidget(this._note)))
+          .then((res) {
+            if (res != null && res is int && (res > 0 || res == -1)) {
+              if (res == -1) {
+                /* If cancelled in NoteEdit, then do nothing. */
+              } else {
+                /* Implement code to retrieve data from note table using res as id. */
+              }
+            } else {
+              print("SelfNoteError. NoteViewState. _function. invalid result received from navigator. result: " + res.toString());
+            }
+          })
+          .catchError((e) {});
       } else if (index == 1) {
-        Navigator.pop(context, this._note.id);
+        Navigator.pop(context, -1);
       }
     }
   }

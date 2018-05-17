@@ -65,7 +65,9 @@ class NoteWidgetState extends State<NoteWidget> {
                   }
             })
                 .catchError((e) {});
-          } else {
+          } else if (result == -1) {
+            // Cancelled in NoreView
+          }else {
             print("SelfNoteError. NoteWidgetState. _noteView. Invalid result received. result: " + result + ". note: " + note.toString());
           }
     });
