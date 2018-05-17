@@ -3,19 +3,14 @@ import '../database/note_database_provider.dart';
 import 'dart:math' as math;
 
 class NewNoteWidget extends StatefulWidget {
-  final NoteDatabaseProvider _noteDatabaseProvider;
-  final Note _note;
+  final String _databaseFullPath;
 
-  NewNoteWidget(NoteDatabaseProvider noteDatabaseProvider, Note note)
-      : this._noteDatabaseProvider = noteDatabaseProvider
-        , this._note = note {
-
-    print('new note widget. ' + this._note.toString());
-  }
+  NewNoteWidget(String databaseFullPath)
+      : this._databaseFullPath = databaseFullPath;
 
 
   @override
-  createState() => new NewNoteWidgetState(this._noteDatabaseProvider, this._note);
+  createState() => new NewNoteWidgetState(this._databaseFullPath);
 }
 
 class NewNoteWidgetState extends State<NewNoteWidget>
@@ -34,10 +29,9 @@ class NewNoteWidgetState extends State<NewNoteWidget>
     Colors.orange
   ];
 
-  NewNoteWidgetState(NoteDatabaseProvider noteDatabaseProvider, Note note) {
-    this._noteDatabaseProvider = noteDatabaseProvider;
-    this.note = note;
-    print('new note widget state. ' + this.note.toString());
+  NewNoteWidgetState(String databaseFullPath) {
+    this._noteDatabaseProvider = new NoteDatabaseProvider(databaseFullPath);
+    this.note = new Note();
   }
 
   void _cancel() {
@@ -47,14 +41,30 @@ class NewNoteWidgetState extends State<NewNoteWidget>
   void _save() {
     print(_textEditController.value.text.toString());
     this.note.message = _textEditController.value.text.toString();
-    this._noteDatabaseProvider.insertUpdate(this.note).then((new_note) {
-      print("_save" + new_note.toString());
-      if (new_note.id == -1) {
-        Navigator.pop(context, null);
-      } else {
-        Navigator.pop(context, new_note);
-      }
+
+    this._noteDatabaseProvider.open()
+        .then((_bool) {
+          if (_bool) {
+            this._noteDatabaseProvider.insertUpdate(this.note).then((new_note) {
+              print("_save" + new_note.toString());
+              if (new_note.id == -1) {
+                Navigator.pop(context, null);
+              } else {
+                Navigator.pop(context, new_note);
+              }
+            });
+          } else {
+            print("SelfNoteError. NoteEditState. _save. database open failed. _bool: " + _bool.toString());
+          }
+    })
+        .catchError((e) {
+      print("SelfNoteError. NewNoteWidgetState. _save. database open failed (in catch). e: " + e.toString());
     });
+
+
+
+
+
   }
 
   @override

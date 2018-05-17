@@ -14,7 +14,6 @@ class NoteWidget extends StatefulWidget {
 }
 
 class NoteWidgetState extends State<NoteWidget> {
-  final _biggerFont = const TextStyle(fontSize: 18.0);
   List<Note> notes = List();
   NoteDatabaseProvider noteDatabaseProvider;
 
@@ -66,21 +65,20 @@ class NoteWidgetState extends State<NoteWidget> {
             })
                 .catchError((e) {});
           } else if (result == -1) {
-            // Cancelled in NoreView
+            /* Cancelled in NoteView */
           }else {
             print("SelfNoteError. NoteWidgetState. _noteView. Invalid result received. result: " + result + ". note: " + note.toString());
           }
     });
   }
 
-  void _updateNote(Note note) {
-    print('_updateNote. ' + note.toString());
+  void _newNote() {
     Navigator
         .push(
             context,
             new MaterialPageRoute(
                 builder: (context) =>
-                    new NewNoteWidget(this.noteDatabaseProvider, note)))
+                    new NewNoteWidget(this.noteDatabaseProvider.databaseFullPath)))
         .then((result) {
       if (result != null && result is Note && result.message.length > 0) {
         setState(() {
@@ -88,12 +86,10 @@ class NoteWidgetState extends State<NoteWidget> {
           bool contains = false;
           for (int a = 0; a < this.notes.length; a++) {
             if (this.notes[a].id == result.id) {
-              print("updatenote. id found. id:" + this.notes[a].id.toString() + " : " + result.id.toString());
               this.notes[a].message = result.message;
               contains = true;
             }
             if (a >= (this.notes.length-1) && !contains) {
-              print("updatenote. id not found.");
                   this.notes.add(result);
             }
           }
@@ -134,7 +130,7 @@ class NoteWidgetState extends State<NoteWidget> {
         },
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: () { _updateNote(new Note()); },
+        onPressed: () { _newNote(); },
         tooltip: 'Increment',
         child: new Icon(Icons.add),
       ),
