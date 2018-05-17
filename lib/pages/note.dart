@@ -40,7 +40,35 @@ class NoteWidgetState extends State<NoteWidget> {
   }
 
   void _noteView(Note note) {
-    Navigator.push(context, new MaterialPageRoute(builder: (context) => new NoteView(note)));
+    Navigator.push(context, new MaterialPageRoute(builder: (context) => new NoteView(note)))
+        .then((result) {
+          if (result != null && result is int && result > 0) {
+            this.noteDatabaseProvider.getNote(result)
+                .then((res) {
+                  if (res != null && res is Note && res.message.length > 0) {
+                    bool _found = false;
+                    int a;
+                    for (a = 0; a < this.notes.length; a++) {
+                      if (this.notes[a].id == res.id) {
+                        print("SelfNoteSuccess. NoteWidgetState. _noteView. note: [" + result.toString() + "] found in this.notes list.");
+                        _found = true;
+                        setState(() {
+                          this.notes[a].message = res.message;
+                        });
+                      }
+                    }
+                    if (a >= this.notes.length && !_found) {
+                      print("SelfNoteError. NoteWidgetState. _noteView. note: [" + result.toString() + "] not found in this.notes list.");
+                    }
+                  } else {
+                    print("SelfNoteError. NoteWidgetState. _noteView. Invalid res received. res: " + result.toString() + ".");
+                  }
+            })
+                .catchError((e) {});
+          } else {
+            print("SelfNoteError. NoteWidgetState. _noteView. Invalid result received. result: " + result + ". note: " + note.toString());
+          }
+    });
   }
 
   void _updateNote(Note note) {
