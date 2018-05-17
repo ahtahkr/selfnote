@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../database/note_database_provider.dart';
 import './new_note.dart';
+import './note_view.dart';
 
 class NoteWidget extends StatefulWidget {
   final String databaseFullPath;
@@ -38,6 +39,10 @@ class NoteWidgetState extends State<NoteWidget> {
     });
   }
 
+  void _noteView(Note note) {
+    Navigator.push(context, new MaterialPageRoute(builder: (context) => new NoteView(note)));
+  }
+
   void _updateNote(Note note) {
     print('_updateNote. ' + note.toString());
     Navigator
@@ -71,7 +76,7 @@ class NoteWidgetState extends State<NoteWidget> {
     return new Container(
         decoration: boxDecoration,
         child: new ListTile(
-          onTap: () { this._updateNote(_note); },
+          onTap: () { this._noteView(_note); },
           dense: true,
           title: new Text(
             ((_note.message != null && _note.message.isNotEmpty)
