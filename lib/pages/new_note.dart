@@ -30,6 +30,11 @@ class NewNoteWidgetState extends State<NewNoteWidget>
     Icons.cancel,
     Icons.keyboard_hide
   ];
+  static const List<Color> _backgroundColor = const [
+    Colors.green,
+    Colors.red,
+    Colors.blue
+  ];
 
   NewNoteWidgetState(NoteDatabaseProvider noteDatabaseProvider, Note note) {
     this._noteDatabaseProvider = noteDatabaseProvider;
@@ -81,8 +86,9 @@ class NewNoteWidgetState extends State<NewNoteWidget>
 
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor = Theme.of(context).cardColor;
-    Color foregroundColor = Theme.of(context).accentColor;
+
+    Color backgroundColor = Colors.red;
+    Color foregroundColor = Colors.white;
 
     InputDecoration inputDecoration;
     if (note.message != null && note.message.length > 0) {
@@ -120,7 +126,7 @@ class NewNoteWidgetState extends State<NewNoteWidget>
                   ),
                   child: new FloatingActionButton(
                     heroTag: "Y${icons[index]}",
-                    backgroundColor: backgroundColor,
+                    backgroundColor: _backgroundColor[index],
                     mini: true,
                     child: new Icon(icons[index], color: foregroundColor),
                     onPressed: () {
