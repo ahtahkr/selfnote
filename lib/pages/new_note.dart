@@ -27,13 +27,11 @@ class NewNoteWidgetState extends State<NewNoteWidget>
 
   static const List<IconData> icons = const [
     Icons.save,
-    Icons.cancel,
-    Icons.delete
+    Icons.cancel
   ];
   static const List<Color> _backgroundColor = const [
     Colors.green,
-    Colors.orange,
-    Colors.red
+    Colors.orange
   ];
 
   NewNoteWidgetState(NoteDatabaseProvider noteDatabaseProvider, Note note) {
@@ -80,9 +78,7 @@ class NewNoteWidgetState extends State<NewNoteWidget>
 
   _function(int index) {
     if (index != null) {
-      if (index == 2) {
-        // place feature to delete.
-      } else if (index == 0) {
+      if (index == 0) {
         this._save();
       } else if (index == 1) {
         this._cancel();
@@ -159,7 +155,6 @@ class NewNoteWidgetState extends State<NewNoteWidget>
                     },
                   ),
                   onPressed: () {
-                    this._dismissKeyboard();
                     if (_controller.isDismissed) {
                       _controller.forward();
                     } else {
