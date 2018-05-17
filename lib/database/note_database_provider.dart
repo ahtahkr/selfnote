@@ -227,6 +227,22 @@ class NoteDatabaseProvider {
       }
     }).catchError((e) {print(e.toString()); return null;});
   }
+
+  Future<int> delete(int id) {
+    return db.delete(tableNote, where: "$columnId = ?", whereArgs: [id])
+              .then((res) {
+                print("NoteDBProvider. delete. successful. result:" + res.toString());
+                if (res == 1) {
+                  return id;
+                } else {
+                  print("NoteDBProvider. delete. More than one row was deleted. res: " + res.toString());
+                  return -1;
+                }
+    }).catchError((e) {
+      print("NoteDBProvider. delete. error (in catch) e: " + e.toString());
+      return -1;
+    });
+  }
 }
 
 /*
