@@ -59,6 +59,14 @@ class NoteWidgetState extends State<NoteWidget> {
                     if (a >= this.notes.length && !_found) {
                       print("SelfNoteError. NoteWidgetState. _noteView. note: [" + result.toString() + "] not found in this.notes list.");
                     }
+                  } else if (res == null) {
+                    for (int a = 0; a < this.notes.length; a++) {
+                      if (this.notes[a].id == result) {
+                        setState(() {
+                          this.notes.removeAt(a);
+                        });
+                      }
+                    }
                   } else {
                     print("SelfNoteError. NoteWidgetState. _noteView. Invalid res received. res: " + result.toString() + ".");
                   }

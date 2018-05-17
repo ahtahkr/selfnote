@@ -45,10 +45,12 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
 
   static const List<IconData> _icons = const [
     Icons.edit,
+    Icons.delete,
     Icons.cancel
   ];
   static const List<Color> _backgroundColor = const [
     Colors.blue,
+    Colors.red,
     Colors.orange
   ];
   Color _foregroundColor = Colors.white;
@@ -61,7 +63,6 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
               if (res == -1) {
                 /* If cancelled in NoteEdit, then do nothing. */
               } else {
-                /* Implement code to retrieve data from note table using res as id. */
                 this._noteDatabaseProvider.open().then((result){
                   if (result != null && result is bool && result) {
                     this._noteDatabaseProvider.getNote(res)
@@ -86,8 +87,34 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
             }
           })
           .catchError((e) {});
-      } else if (index == 1) {
+      } else if (index == 2) {
         Navigator.pop(context, this._note.id);
+      } else if (index == 1) {
+
+        this._noteDatabaseProvider.open().then((result){
+          if (result != null && result is bool && result) {
+
+            this._noteDatabaseProvider.delete(this._note.id)
+                .then((result_one) {
+
+                  if (result_one != null && result_one is int){
+                    Navigator.pop(context, result_one);
+                  } else {
+                    print("SelfNoteError. NoteViewState. _function. index[" + index.toString() + "] database delete failed. result_one: " + result_one.toString());
+                  }
+            })
+                .catchError((e) {
+              print("SelfNoteError. NoteViewState. _function. index[" + index.toString() + "] database delete failed. e: " + e.toString());
+            });
+
+          } else {
+            print("SelfNoteError. NoteViewState. _function. index[" + index.toString() + "] database open failed. _bool: " + result.toString());
+          }
+        }).catchError((e) {
+          print("SelfNoteError. NoteViewState. _function. index[" + index.toString() + "] database open failed (in catch). e: " + e.toString());
+        });
+
+
       }
     }
   }
