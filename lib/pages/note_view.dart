@@ -5,14 +5,15 @@ import './note_edit.dart';
 
 class NoteView extends StatefulWidget {
   final Note _note;
+  final String _databaseFullPath;
 
-  NoteView(Note note)
-    : this._note = note {
+  NoteView(Note note, String databaseFullPath)
+    : this._note = note, this._databaseFullPath = databaseFullPath {
     print('NoteView Constructor');
   }
 
   @override
-  createState() => new NoteViewState(this._note);
+  createState() => new NoteViewState(this._note, this._databaseFullPath);
 }
 
 class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
@@ -20,11 +21,13 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
   Note _note;
   TextEditingController _textEditingController;
   AnimationController _controller;
+  NoteDatabaseProvider _noteDatabaseProvider;
 
-  NoteViewState(Note note) {
+  NoteViewState(Note note, String databaseFullPath) {
     print('NoteViewState Constructor start.');
     this._note = note;
     this._textEditingController = new TextEditingController();
+    this._noteDatabaseProvider = new NoteDatabaseProvider(databaseFullPath);
     print('NoteViewState Constructor end.');
   }
   
@@ -52,13 +55,31 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
   _function(int index) {
     if (index != null) {
       if (index == 0) {
-        Navigator.push(context, new MaterialPageRoute(builder: (context) => new NoteEditWidget(this._note)))
+        Navigator.push(context, new MaterialPageRoute(builder: (context) => new NoteEditWidget(this._note, this._noteDatabaseProvider.databaseFullPath)))
           .then((res) {
             if (res != null && res is int && (res > 0 || res == -1)) {
               if (res == -1) {
                 /* If cancelled in NoteEdit, then do nothing. */
               } else {
                 /* Implement code to retrieve data from note table using res as id. */
+                this._noteDatabaseProvider.open().then((result){
+                  if (result != null && result is bool && result) {
+                    this._noteDatabaseProvider.getNote(res)
+                        .then((result_one) {
+                          setState(() {
+                            this._note = result_one;
+                            this._textEditingController.text = result_one.message;
+                          });
+                    })
+                        .catchError((e) {
+                          print("SelfNoteError. NoteViewState. _function. index[" + index.toString() + "] database getNote failed. e: " + e.toString());
+                    });
+                  } else {
+                    print("SelfNoteError. NoteViewState. _function. index[" + index.toString() + "] database open failed. _bool: " + result.toString());
+                  }
+                }).catchError((e) {
+                  print("SelfNoteError. NoteViewState. _function. index[" + index.toString() + "] database open failed (in catch). e: " + e.toString());
+                });
               }
             } else {
               print("SelfNoteError. NoteViewState. _function. invalid result received from navigator. result: " + res.toString());
@@ -66,7 +87,7 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
           })
           .catchError((e) {});
       } else if (index == 1) {
-        Navigator.pop(context, -1);
+        Navigator.pop(context, this._note.id);
       }
     }
   }

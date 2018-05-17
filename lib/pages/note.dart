@@ -40,7 +40,7 @@ class NoteWidgetState extends State<NoteWidget> {
   }
 
   void _noteView(Note note) {
-    Navigator.push(context, new MaterialPageRoute(builder: (context) => new NoteView(note)))
+    Navigator.push(context, new MaterialPageRoute(builder: (context) => new NoteView(note, this.noteDatabaseProvider.databaseFullPath)))
         .then((result) {
           if (result != null && result is int && result > 0) {
             this.noteDatabaseProvider.getNote(result)
