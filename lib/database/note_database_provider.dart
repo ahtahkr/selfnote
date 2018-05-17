@@ -191,7 +191,15 @@ class NoteDatabaseProvider {
     print("NoteDBProvider. update. got: " + note.toString());
     return db.update(tableNote, note.toMap(),
         where: "$columnId = ?", whereArgs: [note.id])
-    .then((res) { /*res = 1. if update successful.*/ print("NoteDBProvider. update. after update: " + res.toString()); return res;})
+    .then((res) {
+      print("NoteDBProvider. update. after update: " + res.toString());
+      /*res = 1. if update successful.*/
+      if (res == 1) {
+        return note.id;
+      } else {
+        return -1;
+      }
+    })
     .catchError((e) {print(e.toString()); return -1;});
   }
 
