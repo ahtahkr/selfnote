@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../database/note_database_provider.dart';
 import 'dart:math' as math;
+import './note_edit.dart';
 
 class NoteView extends StatefulWidget {
   final Note _note;
@@ -51,7 +52,7 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
   _function(int index) {
     if (index != null) {
       if (index == 0) {
-        print('edit');
+        Navigator.push(context, new MaterialPageRoute(builder: (context) => new NoteEditWidget(this._note)));
       } else if (index == 1) {
         Navigator.pop(context, this._note.id);
       }
