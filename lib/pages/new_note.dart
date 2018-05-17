@@ -28,12 +28,12 @@ class NewNoteWidgetState extends State<NewNoteWidget>
   static const List<IconData> icons = const [
     Icons.save,
     Icons.cancel,
-    Icons.keyboard_hide
+    Icons.delete
   ];
   static const List<Color> _backgroundColor = const [
     Colors.green,
-    Colors.red,
-    Colors.blue
+    Colors.orange,
+    Colors.red
   ];
 
   NewNoteWidgetState(NoteDatabaseProvider noteDatabaseProvider, Note note) {
@@ -66,15 +66,22 @@ class NewNoteWidgetState extends State<NewNoteWidget>
     _controller = new AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
+
     );
+  }
+
+  _dismissKeyboard() {
+    if (MediaQuery.of(context).viewInsets.bottom != 0) {
+      String mes = this._textEditController.value.text;
+      FocusScope.of(context).requestFocus(new FocusNode());
+      this._textEditController.text = mes;
+    }
   }
 
   _function(int index) {
     if (index != null) {
       if (index == 2) {
-        String mes = this._textEditController.value.text;
-        FocusScope.of(context).requestFocus(new FocusNode());
-        this._textEditController.text = mes;
+        // place feature to delete.
       } else if (index == 0) {
         this._save();
       } else if (index == 1) {
@@ -87,7 +94,6 @@ class NewNoteWidgetState extends State<NewNoteWidget>
   @override
   Widget build(BuildContext context) {
 
-    Color backgroundColor = Colors.red;
     Color foregroundColor = Colors.white;
 
     InputDecoration inputDecoration;
@@ -153,6 +159,7 @@ class NewNoteWidgetState extends State<NewNoteWidget>
                     },
                   ),
                   onPressed: () {
+                    this._dismissKeyboard();
                     if (_controller.isDismissed) {
                       _controller.forward();
                     } else {
