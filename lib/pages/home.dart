@@ -5,28 +5,46 @@ import './category.dart';
 import 'package:path/path.dart' as _path;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'dart:async';
 
 class HomePage extends State<SelfNote> {
   var ok;
   CategoryPage categoryPage;
+  NoteWidget notePage;
   String title, databaseDirectory, databaseName;
 
-  setPages() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+  Future<bool> setPages() {
+    return new Future<bool>(() {
+      return getApplicationDocumentsDirectory().then((directory) {
+        this.databaseDirectory = directory.path;
+        this.databaseName = "selfnote.db";
 
-    this.databaseDirectory = documentsDirectory.path;
-    this.databaseName = "selfnote.db";
-
-    this.categoryPage =
+        this.categoryPage =
         new CategoryPage(this.databaseDirectory, this.databaseName);
 
-    this.title = "Home";
+        this.notePage =
+        new NoteWidget(_path.join(this.databaseDirectory, this.databaseName));
+
+        this.title = "Home";
+
+        setState(() {
+          this.assignNotePage();
+        });
+        return true;
+
+      }).catchError((e) {
+        print ("SelfNoteError. HomePage. setPages. Error: " + e.toString());
+        return false;
+      });
+    });
+
   }
+
+
 
   assignNotePage() {
     setState(() {
-      ok =
-          new NoteWidget(_path.join(this.databaseDirectory, this.databaseName));
+      ok = this.notePage;
       title = "Note";
     });
   }
@@ -39,7 +57,15 @@ class HomePage extends State<SelfNote> {
   }
 
   HomePage() {
-    this.setPages();
+    this.setPages().then((result) {
+      if (result != null && result is bool && result) {
+        print("SelfNoteSuccess. Homepage. Constructor. setPages returned " + result.toString());
+      } else {
+        print("SelfNoteError. Homepage. Constructor. setPages returned false.");
+      }
+    }).catchError((e) {
+      print("SelfNoteError. HomePage. Constructor. catch. Error: " + e.toString());
+    });
   }
 
   void openNotePage(BuildContext context) {

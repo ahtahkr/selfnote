@@ -14,7 +14,7 @@ class NoteWidget extends StatefulWidget {
 }
 
 class NoteWidgetState extends State<NoteWidget> {
-  List<Note> notes = List();
+  List<Note> notes = new List();
   NoteDatabaseProvider noteDatabaseProvider;
 
   NoteWidgetState(String _databaseFullPath)
