@@ -89,19 +89,26 @@ class NoteWidgetState extends State<NoteWidget> {
                     new NewNoteWidget(this.noteDatabaseProvider.databaseFullPath)))
         .then((result) {
       if (result != null && result is Note && result.message.length > 0) {
-        setState(() {
-
-          bool contains = false;
-          for (int a = 0; a < this.notes.length; a++) {
-            if (this.notes[a].id == result.id) {
-              this.notes[a].message = result.message;
-              contains = true;
-            }
-            if (a >= (this.notes.length-1) && !contains) {
+          if (this.notes.length > 0) {
+            bool contains = false;
+            for (int a = 0; a < this.notes.length; a++) {
+              if (this.notes[a].id == result.id) {
+                setState(() {
+                  this.notes[a].message = result.message;
+                });
+                contains = true;
+              }
+              if (a >= (this.notes.length - 1) && !contains) {
+                setState(() {
                   this.notes.add(result);
+                });
+              }
             }
+          } else {
+            setState(() {
+              this.notes.add(result);
+            });
           }
-        });
       }
     });
   }
