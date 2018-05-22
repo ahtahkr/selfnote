@@ -8,7 +8,6 @@ class NewNoteWidget extends StatefulWidget {
   NewNoteWidget(String databaseFullPath)
       : this._databaseFullPath = databaseFullPath;
 
-
   @override
   createState() => new NewNoteWidgetState(this._databaseFullPath);
 }
@@ -20,10 +19,7 @@ class NewNoteWidgetState extends State<NewNoteWidget>
   AnimationController _controller;
   Note note;
 
-  static const List<IconData> icons = const [
-    Icons.save,
-    Icons.cancel
-  ];
+  static const List<IconData> icons = const [Icons.save, Icons.cancel];
   static const List<Color> _backgroundColor = const [
     Colors.green,
     Colors.orange
@@ -42,29 +38,26 @@ class NewNoteWidgetState extends State<NewNoteWidget>
     print(_textEditController.value.text.toString());
     this.note.message = _textEditController.value.text.toString();
 
-    this._noteDatabaseProvider.open()
-        .then((_bool) {
-          if (_bool) {
-            this._noteDatabaseProvider.insertUpdate(this.note).then((new_note) {
-              print("_save" + new_note.toString());
-              if (new_note.id == -1) {
-                Navigator.pop(context, null);
-              } else {
-                Navigator.pop(context, new_note);
-              }
-            });
+    this._noteDatabaseProvider.open().then((_bool) {
+      if (_bool) {
+        this._noteDatabaseProvider.insertUpdate(this.note).then((new_note) {
+          print("_save" + new_note.toString());
+          if (new_note.id == -1) {
+            Navigator.pop(context, null);
           } else {
-            print("SelfNoteError. NoteEditState. _save. database open failed. _bool: " + _bool.toString());
+            Navigator.pop(context, new_note);
           }
-    })
-        .catchError((e) {
-      print("SelfNoteError. NewNoteWidgetState. _save. database open failed (in catch). e: " + e.toString());
+        });
+      } else {
+        print(
+            "SelfNoteError. NoteEditState. _save. database open failed. _bool: " +
+                _bool.toString());
+      }
+    }).catchError((e) {
+      print(
+          "SelfNoteError. NewNoteWidgetState. _save. database open failed (in catch). e: " +
+              e.toString());
     });
-
-
-
-
-
   }
 
   @override
@@ -74,7 +67,6 @@ class NewNoteWidgetState extends State<NewNoteWidget>
     _controller = new AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
-
     );
   }
 
@@ -99,7 +91,6 @@ class NewNoteWidgetState extends State<NewNoteWidget>
 
   @override
   Widget build(BuildContext context) {
-
     Color foregroundColor = Colors.white;
 
     InputDecoration inputDecoration;

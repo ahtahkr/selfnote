@@ -39,44 +39,58 @@ class NoteWidgetState extends State<NoteWidget> {
   }
 
   void _noteView(Note note) {
-    Navigator.push(context, new MaterialPageRoute(builder: (context) => new NoteView(note, this.noteDatabaseProvider.databaseFullPath)))
+    Navigator
+        .push(
+            context,
+            new MaterialPageRoute(
+                builder: (context) => new NoteView(
+                    note, this.noteDatabaseProvider.databaseFullPath)))
         .then((result) {
-          if (result != null && result is int && result > 0) {
-            this.noteDatabaseProvider.getNote(result)
-                .then((res) {
-                  if (res != null && res is Note && res.message.length > 0) {
-                    bool _found = false;
-                    int a;
-                    for (a = 0; a < this.notes.length; a++) {
-                      if (this.notes[a].id == res.id) {
-                        print("SelfNoteSuccess. NoteWidgetState. _noteView. note: [" + result.toString() + "] found in this.notes list.");
-                        _found = true;
-                        setState(() {
-                          this.notes[a].message = res.message;
-                        });
-                      }
-                    }
-                    if (a >= this.notes.length && !_found) {
-                      print("SelfNoteError. NoteWidgetState. _noteView. note: [" + result.toString() + "] not found in this.notes list.");
-                    }
-                  } else if (res == null) {
-                    for (int a = 0; a < this.notes.length; a++) {
-                      if (this.notes[a].id == result) {
-                        setState(() {
-                          this.notes.removeAt(a);
-                        });
-                      }
-                    }
-                  } else {
-                    print("SelfNoteError. NoteWidgetState. _noteView. Invalid res received. res: " + result.toString() + ".");
-                  }
-            })
-                .catchError((e) {});
-          } else if (result == -1) {
-            /* Cancelled in NoteView */
-          }else {
-            print("SelfNoteError. NoteWidgetState. _noteView. Invalid result received. result: " + result + ". note: " + note.toString());
+      if (result != null && result is int && result > 0) {
+        this.noteDatabaseProvider.getNote(result).then((res) {
+          if (res != null && res is Note && res.message.length > 0) {
+            bool _found = false;
+            int a;
+            for (a = 0; a < this.notes.length; a++) {
+              if (this.notes[a].id == res.id) {
+                print("SelfNoteSuccess. NoteWidgetState. _noteView. note: [" +
+                    result.toString() +
+                    "] found in this.notes list.");
+                _found = true;
+                setState(() {
+                  this.notes[a].message = res.message;
+                });
+              }
+            }
+            if (a >= this.notes.length && !_found) {
+              print("SelfNoteError. NoteWidgetState. _noteView. note: [" +
+                  result.toString() +
+                  "] not found in this.notes list.");
+            }
+          } else if (res == null) {
+            for (int a = 0; a < this.notes.length; a++) {
+              if (this.notes[a].id == result) {
+                setState(() {
+                  this.notes.removeAt(a);
+                });
+              }
+            }
+          } else {
+            print(
+                "SelfNoteError. NoteWidgetState. _noteView. Invalid res received. res: " +
+                    result.toString() +
+                    ".");
           }
+        }).catchError((e) {});
+      } else if (result == -1) {
+        /* Cancelled in NoteView */
+      } else {
+        print(
+            "SelfNoteError. NoteWidgetState. _noteView. Invalid result received. result: " +
+                result +
+                ". note: " +
+                note.toString());
+      }
     });
   }
 
@@ -85,30 +99,30 @@ class NoteWidgetState extends State<NoteWidget> {
         .push(
             context,
             new MaterialPageRoute(
-                builder: (context) =>
-                    new NewNoteWidget(this.noteDatabaseProvider.databaseFullPath)))
+                builder: (context) => new NewNoteWidget(
+                    this.noteDatabaseProvider.databaseFullPath)))
         .then((result) {
       if (result != null && result is Note && result.message.length > 0) {
-          if (this.notes.length > 0) {
-            bool contains = false;
-            for (int a = 0; a < this.notes.length; a++) {
-              if (this.notes[a].id == result.id) {
-                setState(() {
-                  this.notes[a].message = result.message;
-                });
-                contains = true;
-              }
-              if (a >= (this.notes.length - 1) && !contains) {
-                setState(() {
-                  this.notes.add(result);
-                });
-              }
+        if (this.notes.length > 0) {
+          bool contains = false;
+          for (int a = 0; a < this.notes.length; a++) {
+            if (this.notes[a].id == result.id) {
+              setState(() {
+                this.notes[a].message = result.message;
+              });
+              contains = true;
             }
-          } else {
-            setState(() {
-              this.notes.add(result);
-            });
+            if (a >= (this.notes.length - 1) && !contains) {
+              setState(() {
+                this.notes.add(result);
+              });
+            }
           }
+        } else {
+          setState(() {
+            this.notes.add(result);
+          });
+        }
       }
     });
   }
@@ -117,7 +131,9 @@ class NoteWidgetState extends State<NoteWidget> {
     return new Container(
         decoration: boxDecoration,
         child: new ListTile(
-          onTap: () { this._noteView(_note); },
+          onTap: () {
+            this._noteView(_note);
+          },
           dense: true,
           title: new Text(
             ((_note.message != null && _note.message.isNotEmpty)
@@ -145,7 +161,9 @@ class NoteWidgetState extends State<NoteWidget> {
         },
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: () { _newNote(); },
+        onPressed: () {
+          _newNote();
+        },
         tooltip: 'Increment',
         child: new Icon(Icons.add),
       ),

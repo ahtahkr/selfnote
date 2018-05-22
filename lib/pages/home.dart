@@ -20,10 +20,10 @@ class HomePage extends State<SelfNote> {
         this.databaseName = "selfnote.db";
 
         this.categoryPage =
-        new CategoryPage(this.databaseDirectory, this.databaseName);
+            new CategoryPage(this.databaseDirectory, this.databaseName);
 
-        this.notePage =
-        new NoteWidget(_path.join(this.databaseDirectory, this.databaseName));
+        this.notePage = new NoteWidget(
+            _path.join(this.databaseDirectory, this.databaseName));
 
         this.title = "Home";
 
@@ -31,16 +31,12 @@ class HomePage extends State<SelfNote> {
           this.assignNotePage();
         });
         return true;
-
       }).catchError((e) {
-        print ("SelfNoteError. HomePage. setPages. Error: " + e.toString());
+        print("SelfNoteError. HomePage. setPages. Error: " + e.toString());
         return false;
       });
     });
-
   }
-
-
 
   assignNotePage() {
     setState(() {
@@ -59,12 +55,14 @@ class HomePage extends State<SelfNote> {
   HomePage() {
     this.setPages().then((result) {
       if (result != null && result is bool && result) {
-        print("SelfNoteSuccess. Homepage. Constructor. setPages returned " + result.toString());
+        print("SelfNoteSuccess. Homepage. Constructor. setPages returned " +
+            result.toString());
       } else {
         print("SelfNoteError. Homepage. Constructor. setPages returned false.");
       }
     }).catchError((e) {
-      print("SelfNoteError. HomePage. Constructor. catch. Error: " + e.toString());
+      print("SelfNoteError. HomePage. Constructor. catch. Error: " +
+          e.toString());
     });
   }
 

@@ -81,7 +81,8 @@ class NoteDatabaseProvider {
         if (res.length == 0) {
           print("NoteDBProvider. SetUpDatabase. Note Table is empty.");
           Note note = new Note();
-          note.message = "DebianGNU/Linux8beaglebonettyS0BeagleBoard.orgDebianImage2016-05-01Support/FAQ:http://elinux.org/Beagleboard:BeagleBoneBlack_Debiandefaultusername:passwordis[debian:temppwd]TheIPAddressforeth0is:192.168.0.3TheIPAddressforusb0is:192.168.7.2beaglebonelogin:rootPassword:[24.600655]omap-sham53100000.sham:initializationfailed.Lastlogin:FriFeb1615:25:47UTC2018onttyS0Linuxbeaglebone4.4.8-ti-r22#1SMPWedApr2722:23:10UTC2016armv7lTheprogramsincludedwiththeDebianGNU/Linuxsystemarefreesoftware;theexactdistributiontermsforeachprogramaredescribedintheindividualfilesin/usr/share/doc/*/copyright.DebianGNU/LinuxcomeswithABSOLUTELYNOWARRANTY,totheextentpermittedbyapplicablelaw.root@beaglebone:~#!tatail-F/run/log/messagesApr1815:21:28beaglebonesmartsense:SerialRx:0106AA06B704Apr1815:21:29beaglebonekernel:[29.056294]asoc-simple-cardsound:i2s-hifi<->48038000.mcaspmappingokApr1815:21:30beaglebonesmartsense:SerialTx:01432A03FFFF07010104047A62D75A05020000060200000702FA00080100090200001C0A02020000000000000000390A646464646464646464644201FF4301FF008D04Apr1815:21:30beaglebonesmartsense:NetManager:Beacon8Sent:Req:0to0MsgTTL:0.296298sAppTTL:0.646298sApr1815:21:30beaglebonesmartsense:SerialRx:0150AB010700000000FF07A103FFFFE9030600FF010104047A62D75A05020000060200000702FA00080100090200001C0A02020000000000000000390A646464646464646464644201FF4301FF00B404Apr1815:21:30beaglebonesmartsense:SerialRx:0106AA07B804Apr1815:21:32beaglebonesmartsense:SerialTx:014A2A03FFFF08010104047C62D75A05020200060206000702FA000801000";
+          note.message =
+              "DebianGNU/Linux8beaglebonettyS0BeagleBoard.orgDebianImage2016-05-01Support/FAQ:http://elinux.org/Beagleboard:BeagleBoneBlack_Debiandefaultusername:passwordis[debian:temppwd]TheIPAddressforeth0is:192.168.0.3TheIPAddressforusb0is:192.168.7.2beaglebonelogin:rootPassword:[24.600655]omap-sham53100000.sham:initializationfailed.Lastlogin:FriFeb1615:25:47UTC2018onttyS0Linuxbeaglebone4.4.8-ti-r22#1SMPWedApr2722:23:10UTC2016armv7lTheprogramsincludedwiththeDebianGNU/Linuxsystemarefreesoftware;theexactdistributiontermsforeachprogramaredescribedintheindividualfilesin/usr/share/doc/*/copyright.DebianGNU/LinuxcomeswithABSOLUTELYNOWARRANTY,totheextentpermittedbyapplicablelaw.root@beaglebone:~#!tatail-F/run/log/messagesApr1815:21:28beaglebonesmartsense:SerialRx:0106AA06B704Apr1815:21:29beaglebonekernel:[29.056294]asoc-simple-cardsound:i2s-hifi<->48038000.mcaspmappingokApr1815:21:30beaglebonesmartsense:SerialTx:01432A03FFFF07010104047A62D75A05020000060200000702FA00080100090200001C0A02020000000000000000390A646464646464646464644201FF4301FF008D04Apr1815:21:30beaglebonesmartsense:NetManager:Beacon8Sent:Req:0to0MsgTTL:0.296298sAppTTL:0.646298sApr1815:21:30beaglebonesmartsense:SerialRx:0150AB010700000000FF07A103FFFFE9030600FF010104047A62D75A05020000060200000702FA00080100090200001C0A02020000000000000000390A646464646464646464644201FF4301FF00B404Apr1815:21:30beaglebonesmartsense:SerialRx:0106AA07B804Apr1815:21:32beaglebonesmartsense:SerialTx:014A2A03FFFF08010104047C62D75A05020200060206000702FA000801000";
           return this.insert(note).then((note) {
             print("NoteDBProvider. SetUpDatabase. Insert successful.");
             return true;
@@ -170,11 +171,20 @@ class NoteDatabaseProvider {
   Future<Note> getNote(int id) async {
     if (id != null) {
       print("NoteDBProvider. getNote. id: " + id.toString());
-      return db.query(tableNote,
-          columns: [columnId, columnMessage, columnCreatedOn, columnUpdatedOn, columnNotification, columnNotificationTime],
-          where: "$columnId = ?",
-          whereArgs: [id]).then((result) {
-            print(result.toString());
+      return db
+          .query(tableNote,
+              columns: [
+                columnId,
+                columnMessage,
+                columnCreatedOn,
+                columnUpdatedOn,
+                columnNotification,
+                columnNotificationTime
+              ],
+              where: "$columnId = ?",
+              whereArgs: [id])
+          .then((result) {
+        print(result.toString());
         if (result.length > 0) {
           return new Note.fromMap(result.first);
         } else {
@@ -190,8 +200,7 @@ class NoteDatabaseProvider {
   Future<int> update(Note note) {
     print("NoteDBProvider. update. got: " + note.toString());
     return db.update(tableNote, note.toMap(),
-        where: "$columnId = ?", whereArgs: [note.id])
-    .then((res) {
+        where: "$columnId = ?", whereArgs: [note.id]).then((res) {
       print("NoteDBProvider. update. after update: " + res.toString());
       /*res = 1. if update successful.*/
       if (res == 1) {
@@ -199,8 +208,10 @@ class NoteDatabaseProvider {
       } else {
         return -1;
       }
-    })
-    .catchError((e) {print(e.toString()); return -1;});
+    }).catchError((e) {
+      print(e.toString());
+      return -1;
+    });
   }
 
   Future<Note> insertUpdate(Note note) {
@@ -225,19 +236,23 @@ class NoteDatabaseProvider {
           return null;
         });
       }
-    }).catchError((e) {print(e.toString()); return null;});
+    }).catchError((e) {
+      print(e.toString());
+      return null;
+    });
   }
 
   Future<int> delete(int id) {
-    return db.delete(tableNote, where: "$columnId = ?", whereArgs: [id])
-              .then((res) {
-                print("NoteDBProvider. delete. successful. result:" + res.toString());
-                if (res == 1) {
-                  return id;
-                } else {
-                  print("NoteDBProvider. delete. More than one row was deleted. res: " + res.toString());
-                  return -1;
-                }
+    return db
+        .delete(tableNote, where: "$columnId = ?", whereArgs: [id]).then((res) {
+      print("NoteDBProvider. delete. successful. result:" + res.toString());
+      if (res == 1) {
+        return id;
+      } else {
+        print("NoteDBProvider. delete. More than one row was deleted. res: " +
+            res.toString());
+        return -1;
+      }
     }).catchError((e) {
       print("NoteDBProvider. delete. error (in catch) e: " + e.toString());
       return -1;
