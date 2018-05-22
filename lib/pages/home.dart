@@ -7,11 +7,15 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:async';
 
+import '../database/category_database_provider.dart';
+
 class HomePage extends State<SelfNote> {
   var ok;
-  CategoryPage categoryPage;
+  CategoryWidget categoryPage;
   NoteWidget notePage;
   String title, databaseDirectory, databaseName;
+
+  CategoryDatabaseProvider _categoryDatabaseProvider;
 
   Future<bool> setPages() {
     return new Future<bool>(() {
@@ -20,7 +24,8 @@ class HomePage extends State<SelfNote> {
         this.databaseName = "selfnote.db";
 
         this.categoryPage =
-            new CategoryPage(this.databaseDirectory, this.databaseName);
+        new CategoryWidget(
+            _path.join(this.databaseDirectory, this.databaseName));
 
         this.notePage = new NoteWidget(
             _path.join(this.databaseDirectory, this.databaseName));

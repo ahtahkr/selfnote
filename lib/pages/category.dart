@@ -1,19 +1,168 @@
 import 'package:flutter/material.dart';
-import '../database/database.dart';
+import '../database/category_database_provider.dart';
+import '../database/modal/category.dart';
 
-class CategoryPage extends StatelessWidget {
-  final String pageText = "CategoriesPage";
-  final AppDatabase appDatabase;
+class CategoryWidget extends StatefulWidget {
+  final String databaseFullPath;
 
-  CategoryPage(String _databaseDirectory, String _databaseName)
-      : appDatabase = new AppDatabase(_databaseDirectory, _databaseName);
+  CategoryWidget(String _databaseFullPath)
+      : this.databaseFullPath = _databaseFullPath;
+
+  @override
+  createState() => new CategoryState(this.databaseFullPath);
+}
+
+class CategoryState extends State<CategoryWidget> {
+  List<Category> categories = new List();
+  CategoryDatabaseProvider categoryDatabaseProvider;
+
+  CategoryState(String _databaseFullPath)
+      : this.categoryDatabaseProvider = new CategoryDatabaseProvider(_databaseFullPath);
+
+  @override
+  void initState() {
+    super.initState();
+    this.categoryDatabaseProvider.initialSetUp().then((res) {
+      print('initial setup complete.');
+      this.categoryDatabaseProvider.get().then((res_1) {
+        print('get complete. ' + res_1.toString());
+        setState(() {
+          this.categories = res_1;
+        });
+      });
+    });
+  }
+/*
+  void _categoryView(Category category) {
+    Navigator
+        .push(
+        context,
+        new MaterialPageRoute(
+            builder: (context) => new NoteView(
+                category, this.categoryDatabaseProvider.databaseFullPath)))
+        .then((result) {
+      if (result != null && result is int && result > 0) {
+        this.categoryDatabaseProvider.getNote(result).then((res) {
+          if (res != null && res is Category && res.message.length > 0) {
+            bool _found = false;
+            int a;
+            for (a = 0; a < this.categorys.length; a++) {
+              if (this.categorys[a].id == res.id) {
+                print("SelfNoteSuccess. NoteWidgetState. _categoryView. category: [" +
+                    result.toString() +
+                    "] found in this.categorys list.");
+                _found = true;
+                setState(() {
+                  this.categorys[a].message = res.message;
+                });
+              }
+            }
+            if (a >= this.categorys.length && !_found) {
+              print("SelfNoteError. NoteWidgetState. _categoryView. category: [" +
+                  result.toString() +
+                  "] not found in this.categorys list.");
+            }
+          } else if (res == null) {
+            for (int a = 0; a < this.categorys.length; a++) {
+              if (this.categorys[a].id == result) {
+                setState(() {
+                  this.categorys.removeAt(a);
+                });
+              }
+            }
+          } else {
+            print(
+                "SelfNoteError. NoteWidgetState. _categoryView. Invalid res received. res: " +
+                    result.toString() +
+                    ".");
+          }
+        }).catchError((e) {});
+      } else if (result == -1) {
+        /* Cancelled in NoteView */
+      } else {
+        print(
+            "SelfNoteError. NoteWidgetState. _categoryView. Invalid result received. result: " +
+                result +
+                ". category: " +
+                category.toString());
+      }
+    });
+  }
+*/
+  /*
+  void _newNote() {
+    Navigator
+        .push(
+        context,
+        new MaterialPageRoute(
+            builder: (context) => new NewNoteWidget(
+                this.categoryDatabaseProvider.databaseFullPath)))
+        .then((result) {
+      if (result != null && result is Category && result.message.length > 0) {
+        if (this.categorys.length > 0) {
+          bool contains = false;
+          for (int a = 0; a < this.categorys.length; a++) {
+            if (this.categorys[a].id == result.id) {
+              setState(() {
+                this.categorys[a].message = result.message;
+              });
+              contains = true;
+            }
+            if (a >= (this.categorys.length - 1) && !contains) {
+              setState(() {
+                this.categorys.add(result);
+              });
+            }
+          }
+        } else {
+          setState(() {
+            this.categorys.add(result);
+          });
+        }
+      }
+    });
+  }*/
+
+  Widget _buildRow(Category _category, BoxDecoration boxDecoration) {
+    return new Container(
+        decoration: boxDecoration,
+        child: new ListTile(
+          /*onTap: () {
+            this._categoryView(_category);
+          },*/
+          dense: true,
+          title: new Text(
+            ((_category.title != null && _category.title.isNotEmpty)
+                ? _category.title
+                : "Undefined"),
+            maxLines: 5,
+          ),
+        ));
+  }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: new Center(
-          child: new Text(
-              pageText + " " + this.appDatabase.getDatabaseFullPath())),
+      body: ListView.builder(
+        padding: EdgeInsets.all(10.0),
+        itemCount: categories.length,
+        itemBuilder: (BuildContext context, int index) {
+          BoxDecoration boxDecoration;
+          if (index % 2 == 0) {
+            boxDecoration = new BoxDecoration(color: Colors.grey[200]);
+          } else {
+            boxDecoration = new BoxDecoration(color: Colors.transparent);
+          }
+          return _buildRow(categories[index], boxDecoration);
+        },
+      ),
+      /*floatingActionButton: new FloatingActionButton(
+        onPressed: () {
+          _newNote();
+        },
+        tooltip: 'Increment',
+        child: new Icon(Icons.add),
+      ),*/
     );
   }
 }
