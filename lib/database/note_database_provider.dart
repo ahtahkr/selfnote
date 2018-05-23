@@ -19,7 +19,7 @@ class Note {
   int categoryId;
 
   String toString() {
-    return "{id:$id, categoryId:$categoryId message:$message, createdOn:$createdOn, updatedOn:$updatedOn, notification:$notification, notificationTime:$notificationTime";
+    return "{id:$id, categoryId:$categoryId, message:$message, createdOn:$createdOn, updatedOn:$updatedOn, notification:$notification, notificationTime:$notificationTime";
   }
 
   Map<String, dynamic> toMap() {
@@ -70,7 +70,8 @@ class NoteDatabaseProvider {
   String getCreateTableQuery() {
     return '''
       create table $tableNote ( 
-        $columnId integer primary key autoincrement, 
+        $columnId integer primary key autoincrement,
+        $columnCategoryId integer not null, 
         $columnMessage text not null,
         $columnCreatedOn date not null,
         $columnUpdatedOn date not null,
@@ -139,6 +140,7 @@ class NoteDatabaseProvider {
     print("Note db provider. get.");
     return db.query(tableNote, columns: [
       columnId,
+      columnCategoryId,
       columnMessage,
       columnCreatedOn,
       columnUpdatedOn,
@@ -180,6 +182,7 @@ class NoteDatabaseProvider {
           .query(tableNote,
               columns: [
                 columnId,
+                columnCategoryId,
                 columnMessage,
                 columnCreatedOn,
                 columnUpdatedOn,
