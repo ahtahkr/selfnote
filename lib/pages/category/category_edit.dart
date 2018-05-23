@@ -40,15 +40,45 @@ class CategoryEditState extends State<CategoryEditWidget>
     );
   }
 
-  static const List<IconData> _icons = const [Icons.save, Icons.cancel];
+  static const List<IconData> _icons = const [Icons.save, Icons.delete, Icons.cancel];
   static const List<Color> _backgroundColor = const [
-    Colors.green,
-    Colors.orange
+    Colors.green , Colors.red, Colors.orange
   ];
   Color _foregroundColor = Colors.white;
   _function(int index) {
     if (index != null) {
-      if (index == 0) {
+      if (index == 1) {
+        this._categoryDatabaseProvider.open().then((result) {
+          if (result != null && result is bool && result) {
+            this._categoryDatabaseProvider.delete(this._category.id).then((result_one) {
+              if (result_one != null && result_one is int) {
+                Navigator.pop(context, result_one);
+              } else {
+                print("SelfcategoryError. categoryViewState. _function. index[" +
+                    index.toString() +
+                    "] database delete failed. result_one: " +
+                    result_one.toString());
+              }
+            }).catchError((e) {
+              print("SelfcategoryError. categoryViewState. _function. index[" +
+                  index.toString() +
+                  "] database delete failed. e: " +
+                  e.toString());
+            });
+          } else {
+            print("SelfcategoryError. categoryViewState. _function. index[" +
+                index.toString() +
+                "] database open failed. _bool: " +
+                result.toString());
+          }
+        }).catchError((e) {
+          print("SelfcategoryError. categoryViewState. _function. index[" +
+              index.toString() +
+              "] database open failed (in catch). e: " +
+              e.toString());
+        });
+      }
+      else if (index == 0) {
         this._category.title = this._textEditingController.value.text.toString();
         this._categoryDatabaseProvider.open().then((_bool) {
           if (_bool) {
@@ -79,7 +109,7 @@ class CategoryEditState extends State<CategoryEditWidget>
               "] database open failed (in catch). e: " +
               e.toString());
         });
-      } else if (index == 1) {
+      } else if (index == 2) {
         Navigator.pop(context, -1);
       }
     }
