@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../database/note_database_provider.dart';
+import '../database/category_database_provider.dart';
+import '../database/modal/category.dart';
 import 'dart:math' as math;
 import './note_edit.dart';
 
@@ -22,12 +24,15 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
   TextEditingController _textEditingController;
   AnimationController _controller;
   NoteDatabaseProvider _noteDatabaseProvider;
+  CategoryDatabaseProvider _categoryDatabaseProvider;
+  Category _category;
 
   NoteViewState(Note note, String databaseFullPath) {
     print('NoteViewState Constructor start.');
     this._note = note;
     this._textEditingController = new TextEditingController();
     this._noteDatabaseProvider = new NoteDatabaseProvider(databaseFullPath);
+    this._categoryDatabaseProvider = new CategoryDatabaseProvider(databaseFullPath);
     print('NoteViewState Constructor end.');
   }
 
@@ -40,7 +45,21 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+    this._categoryDatabaseProvider.initialSetUp().then((res) {
+      print('initial setup complete.');
+      _getCategory();
+    });
     print('NoteViewState initState end.');
+  }
+
+  _getCategory() {
+    this._categoryDatabaseProvider.getCategory(this._note.categoryId)
+        .then((resOne) {
+      setState(() {
+        this._category = resOne;
+      });
+    })
+        .catchError((e) {});
   }
 
   static const List<IconData> _icons = const [
@@ -73,6 +92,7 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
                   this._noteDatabaseProvider.getNote(res).then((result_one) {
                     setState(() {
                       this._note = result_one;
+                      this._getCategory();
                       this._textEditingController.text = result_one.message;
                     });
                   }).catchError((e) {
@@ -143,15 +163,18 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
           title: new Text("Note"),
           automaticallyImplyLeading: false,
         ),
-        body: new Center(
-            child: new SingleChildScrollView(
+        body: new Column(
+          children: <Widget>[
+            new Text(this._category.title),
+           new SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: new TextField(
             maxLines: null,
             enabled: false,
             controller: _textEditingController,
           ),
-        )),
+        )],
+        ),
         floatingActionButton: new Column(
             mainAxisSize: MainAxisSize.min,
             children: new List.generate(_icons.length, (int index) {
