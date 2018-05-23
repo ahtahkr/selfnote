@@ -192,6 +192,48 @@ class CategoryDatabaseProvider {
     });
   }
 
+  Future<int> update(Category category) {
+    print("CategoryDBProvider. update. got: " + category.toString());
+    return db.update(tableName, category.toMap(),
+        where: "$columnId = ?", whereArgs: [category.id]).then((res) {
+      print("CategoryDBProvider. update. after update: " + res.toString());
+      /*res = 1. if update successful.*/
+      if (res == 1) {
+        return new Future.value(category.id);
+      } else {
+        return new Future.value(-1);
+      }
+    }).catchError((e) {
+      print(e.toString());
+      return new Future.value(-1);
+    });
+  }
+
+  Future<Category> getCategory(int id) {
+    if (id != null) {
+      print("CategoryDBProvider. getCategory. id: " + id.toString());
+      return db
+          .query(tableName,
+          columns: [
+            columnId,
+            columnTitle
+          ],
+          where: "$columnId = ?",
+          whereArgs: [id])
+          .then((result) {
+        print(result.toString());
+        if (result.length > 0) {
+          return new Future.value(new Category.fromMap(result.first));
+        } else {
+          return new Future.value(null);
+        }
+      });
+    } else {
+      print("CategoryDBProvider. getCategory. id is null. id: " + id.toString());
+      return new Future.value(null);
+    }
+  }
+
   String _getCheckTableQuery() {
     return "SELECT name FROM sqlite_master WHERE type='table' AND name='$tableName'";
   }
@@ -284,30 +326,7 @@ Future<bool> initialSetUp() {
 
 
 
-  Future<Category> getCategory(int id) async {
-    if (id != null) {
-      print("CategoryDBProvider. getCategory. id: " + id.toString());
-      return db
-          .query(tableCategory,
-              columns: [
-                columnId,
-                columnTitle
-              ],
-              where: "$columnId = ?",
-              whereArgs: [id])
-          .then((result) {
-        print(result.toString());
-        if (result.length > 0) {
-          return new Category.fromMap(result.first);
-        } else {
-          return null;
-        }
-      });
-    } else {
-      print("CategoryDBProvider. getCategory. id is null. id: " + id.toString());
-      return null;
-    }
-  }
+
 
   Future<int> update(Category category) {
     print("CategoryDBProvider. update. got: " + category.toString());
