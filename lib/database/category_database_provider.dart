@@ -192,6 +192,23 @@ class CategoryDatabaseProvider {
     });
   }
 
+  Future<int> delete(int id) {
+    return db
+        .delete(tableName, where: "$columnId = ?", whereArgs: [id]).then((res) {
+      print("NoteDBProvider. delete. successful. result:" + res.toString());
+      if (res == 1) {
+        return new Future.value(id);
+      } else {
+        print("NoteDBProvider. delete. More than one row was deleted. res: " +
+            res.toString());
+        return new Future.value(-1);
+      }
+    }).catchError((e) {
+      print("NoteDBProvider. delete. error (in catch) e: " + e.toString());
+      return new Future.value(-1);
+    });
+  }
+
   Future<int> update(Category category) {
     print("CategoryDBProvider. update. got: " + category.toString());
     return db.update(tableName, category.toMap(),
