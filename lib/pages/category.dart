@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../database/category_database_provider.dart';
 import '../database/modal/category.dart';
+import './category/category_new.dart';
 
 class CategoryWidget extends StatefulWidget {
   final String databaseFullPath;
@@ -89,39 +90,39 @@ class CategoryState extends State<CategoryWidget> {
     });
   }
 */
-  /*
-  void _newNote() {
+
+  void _newCategory() {
     Navigator
         .push(
         context,
         new MaterialPageRoute(
-            builder: (context) => new NewNoteWidget(
+            builder: (context) => new NewCategoryWidget(
                 this.categoryDatabaseProvider.databaseFullPath)))
         .then((result) {
-      if (result != null && result is Category && result.message.length > 0) {
-        if (this.categorys.length > 0) {
+      if (result != null && result is Category && result.title.length > 0) {
+        if (this.categories.length > 0) {
           bool contains = false;
-          for (int a = 0; a < this.categorys.length; a++) {
-            if (this.categorys[a].id == result.id) {
+          for (int a = 0; a < this.categories.length; a++) {
+            if (this.categories[a].id == result.id) {
               setState(() {
-                this.categorys[a].message = result.message;
+                this.categories[a].title = result.title;
               });
               contains = true;
             }
-            if (a >= (this.categorys.length - 1) && !contains) {
+            if (a >= (this.categories.length - 1) && !contains) {
               setState(() {
-                this.categorys.add(result);
+                this.categories.add(result);
               });
             }
           }
         } else {
           setState(() {
-            this.categorys.add(result);
+            this.categories.add(result);
           });
         }
       }
     });
-  }*/
+  }
 
   Widget _buildRow(Category _category, BoxDecoration boxDecoration) {
     return new Container(
@@ -156,13 +157,13 @@ class CategoryState extends State<CategoryWidget> {
           return _buildRow(categories[index], boxDecoration);
         },
       ),
-      /*floatingActionButton: new FloatingActionButton(
+      floatingActionButton: new FloatingActionButton(
         onPressed: () {
-          _newNote();
+          _newCategory();
         },
         tooltip: 'Increment',
         child: new Icon(Icons.add),
-      ),*/
+      ),
     );
   }
 }
