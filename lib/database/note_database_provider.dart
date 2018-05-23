@@ -9,15 +9,17 @@ final String columnCreatedOn = "createdOn";
 final String columnUpdatedOn = "updatedOn";
 final String columnNotification = "notification";
 final String columnNotificationTime = "notificationTime";
+final String columnCategoryId = "categoryId";
 
 class Note {
   int id;
   String message;
   DateTime createdOn, updatedOn, notificationTime;
   bool notification;
+  int categoryId;
 
   String toString() {
-    return "{id:$id, message:$message, createdOn:$createdOn, updatedOn:$updatedOn, notification:$notification, notificationTime:$notificationTime";
+    return "{id:$id, categoryId:$categoryId message:$message, createdOn:$createdOn, updatedOn:$updatedOn, notification:$notification, notificationTime:$notificationTime";
   }
 
   Map<String, dynamic> toMap() {
@@ -26,7 +28,8 @@ class Note {
       columnCreatedOn: createdOn.toString(),
       columnUpdatedOn: updatedOn.toString(),
       columnNotificationTime: notificationTime.toString(),
-      columnNotification: notification == true ? 1 : 0
+      columnNotification: notification == true ? 1 : 0,
+      columnCategoryId: categoryId.toString()
     };
     if (id != null) {
       map[columnId] = id;
@@ -40,6 +43,7 @@ class Note {
     this.updatedOn = new DateTime.now();
     this.notificationTime = new DateTime.now();
     this.notification = false;
+    this.categoryId = 1;
   }
 
   Note.fromMap(Map map) {
@@ -51,6 +55,7 @@ class Note {
     updatedOn = DateTime.parse(map[columnUpdatedOn]);
     notificationTime = DateTime.parse(map[columnNotificationTime]);
     notification = map[columnNotification] == 1;
+    categoryId = map[columnCategoryId];
   }
 }
 
