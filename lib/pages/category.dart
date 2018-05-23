@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../database/category_database_provider.dart';
 import '../database/modal/category.dart';
 import './category/category_new.dart';
+import './category/category_edit.dart';
 
 class CategoryWidget extends StatefulWidget {
   final String databaseFullPath;
@@ -33,41 +34,41 @@ class CategoryState extends State<CategoryWidget> {
       });
     });
   }
-/*
-  void _categoryView(Category category) {
+
+  void _categoryEdit(Category category) {
     Navigator
         .push(
         context,
         new MaterialPageRoute(
-            builder: (context) => new NoteView(
+            builder: (context) => new CategoryEditWidget(
                 category, this.categoryDatabaseProvider.databaseFullPath)))
         .then((result) {
       if (result != null && result is int && result > 0) {
-        this.categoryDatabaseProvider.getNote(result).then((res) {
-          if (res != null && res is Category && res.message.length > 0) {
+        this.categoryDatabaseProvider.getCategory(result).then((res) {
+          if (res != null && res is Category && res.title.length > 0) {
             bool _found = false;
             int a;
-            for (a = 0; a < this.categorys.length; a++) {
-              if (this.categorys[a].id == res.id) {
+            for (a = 0; a < this.categories.length; a++) {
+              if (this.categories[a].id == res.id) {
                 print("SelfNoteSuccess. NoteWidgetState. _categoryView. category: [" +
                     result.toString() +
-                    "] found in this.categorys list.");
+                    "] found in this.categories list.");
                 _found = true;
                 setState(() {
-                  this.categorys[a].message = res.message;
+                  this.categories[a].title = res.title;
                 });
               }
             }
-            if (a >= this.categorys.length && !_found) {
+            if (a >= this.categories.length && !_found) {
               print("SelfNoteError. NoteWidgetState. _categoryView. category: [" +
                   result.toString() +
-                  "] not found in this.categorys list.");
+                  "] not found in this.categories list.");
             }
           } else if (res == null) {
-            for (int a = 0; a < this.categorys.length; a++) {
-              if (this.categorys[a].id == result) {
+            for (int a = 0; a < this.categories.length; a++) {
+              if (this.categories[a].id == result) {
                 setState(() {
-                  this.categorys.removeAt(a);
+                  this.categories.removeAt(a);
                 });
               }
             }
@@ -89,7 +90,7 @@ class CategoryState extends State<CategoryWidget> {
       }
     });
   }
-*/
+
 
   void _newCategory() {
     Navigator
@@ -128,9 +129,9 @@ class CategoryState extends State<CategoryWidget> {
     return new Container(
         decoration: boxDecoration,
         child: new ListTile(
-          /*onTap: () {
-            this._categoryView(_category);
-          },*/
+          onTap: () {
+            this._categoryEdit(_category);
+          },
           dense: true,
           title: new Text(
             ((_category.title != null && _category.title.isNotEmpty)
