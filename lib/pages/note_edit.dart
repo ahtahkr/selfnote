@@ -126,7 +126,10 @@ class NoteEditState extends State<NoteEditWidget>
           automaticallyImplyLeading: false,
         ),
         body: new Column(children: <Widget>[
-          new DropdownButton(
+        new ListTile(
+        leading: const Icon(Icons.category),
+        title: const Text('Category'),
+        trailing: new DropdownButton(
               isDense: true,
               value: this.selectedCategory,
               items: this.categories.map((Category category) {
@@ -135,7 +138,7 @@ class NoteEditState extends State<NoteEditWidget>
               }).toList(),
               onChanged: (Category category) {
                 _categorySelected(category);
-              }),
+              })),
           new SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: new TextField(
