@@ -15,9 +15,7 @@ class Category {
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {
-      columnTitle: title.toString()
-    };
+    Map<String, dynamic> map = {columnTitle: title.toString()};
     if (id != null) {
       map[columnId] = id;
     }

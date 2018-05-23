@@ -19,7 +19,8 @@ class CategoryState extends State<CategoryWidget> {
   CategoryDatabaseProvider categoryDatabaseProvider;
 
   CategoryState(String _databaseFullPath)
-      : this.categoryDatabaseProvider = new CategoryDatabaseProvider(_databaseFullPath);
+      : this.categoryDatabaseProvider =
+            new CategoryDatabaseProvider(_databaseFullPath);
 
   @override
   void initState() {
@@ -38,10 +39,10 @@ class CategoryState extends State<CategoryWidget> {
   void _categoryEdit(Category category) {
     Navigator
         .push(
-        context,
-        new MaterialPageRoute(
-            builder: (context) => new CategoryEditWidget(
-                category, this.categoryDatabaseProvider.databaseFullPath)))
+            context,
+            new MaterialPageRoute(
+                builder: (context) => new CategoryEditWidget(
+                    category, this.categoryDatabaseProvider.databaseFullPath)))
         .then((result) {
       if (result != null && result is int && result > 0) {
         this.categoryDatabaseProvider.getCategory(result).then((res) {
@@ -50,9 +51,10 @@ class CategoryState extends State<CategoryWidget> {
             int a;
             for (a = 0; a < this.categories.length; a++) {
               if (this.categories[a].id == res.id) {
-                print("SelfNoteSuccess. NoteWidgetState. _categoryView. category: [" +
-                    result.toString() +
-                    "] found in this.categories list.");
+                print(
+                    "SelfNoteSuccess. NoteWidgetState. _categoryView. category: [" +
+                        result.toString() +
+                        "] found in this.categories list.");
                 _found = true;
                 setState(() {
                   this.categories[a].title = res.title;
@@ -60,9 +62,10 @@ class CategoryState extends State<CategoryWidget> {
               }
             }
             if (a >= this.categories.length && !_found) {
-              print("SelfNoteError. NoteWidgetState. _categoryView. category: [" +
-                  result.toString() +
-                  "] not found in this.categories list.");
+              print(
+                  "SelfNoteError. NoteWidgetState. _categoryView. category: [" +
+                      result.toString() +
+                      "] not found in this.categories list.");
             }
           } else if (res == null) {
             for (int a = 0; a < this.categories.length; a++) {
@@ -91,14 +94,13 @@ class CategoryState extends State<CategoryWidget> {
     });
   }
 
-
   void _newCategory() {
     Navigator
         .push(
-        context,
-        new MaterialPageRoute(
-            builder: (context) => new NewCategoryWidget(
-                this.categoryDatabaseProvider.databaseFullPath)))
+            context,
+            new MaterialPageRoute(
+                builder: (context) => new NewCategoryWidget(
+                    this.categoryDatabaseProvider.databaseFullPath)))
         .then((result) {
       if (result != null && result is Category && result.title.length > 0) {
         if (this.categories.length > 0) {

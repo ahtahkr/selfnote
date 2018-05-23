@@ -35,16 +35,20 @@ class CategoryDatabaseProvider {
                     Category category = new Category();
                     category.title = "UnCategorized";
                     return this.insert(category).then((res_4) {
-                      print("CategoryDBProvider. initialSetUp. Insert. " + category.toString());
+                      print("CategoryDBProvider. initialSetUp. Insert. " +
+                          category.toString());
                       return new Future.value(true);
                     });
                   } else {
-                    print("CategoryDBProvider. initialSetUp. Table is NotEmpty.");
+                    print(
+                        "CategoryDBProvider. initialSetUp. Table is NotEmpty.");
                     return new Future.value(false);
                   }
-                } else { return new Future.value(false);}
+                } else {
+                  return new Future.value(false);
+                }
               });
-            }else {
+            } else {
               print("CategoryDBProvider. initialSetUp. Table does not exists.");
               return this.createTable().then((res_2) {
                 if (res_2 != null && res_2 is bool) {
@@ -52,18 +56,26 @@ class CategoryDatabaseProvider {
                   Category category = new Category();
                   category.title = "UnCategorized";
                   return this.insert(category).then((res_4) {
-                    print("CategoryDBProvider. initialSetUp. Insert. " + category.toString());
+                    print("CategoryDBProvider. initialSetUp. Insert. " +
+                        category.toString());
                     return new Future.value(false);
                   });
                 } else {
-                  print("CategoryDBProvider. initialSetUp. Table create unsuccessful.");
-                return new Future.value(false);
+                  print(
+                      "CategoryDBProvider. initialSetUp. Table create unsuccessful.");
+                  return new Future.value(false);
                 }
-              }).catchError((e) { return new Future.value(false);});
+              }).catchError((e) {
+                return new Future.value(false);
+              });
             }
-          } else { return new Future.value(false);}
+          } else {
+            return new Future.value(false);
+          }
         });
-      } else { return new Future.value(false);}
+      } else {
+        return new Future.value(false);
+      }
     });
   }
 
@@ -72,8 +84,8 @@ class CategoryDatabaseProvider {
     if (this.databaseFullPath != null && this.databaseFullPath.isNotEmpty) {
       return openDatabase(this.databaseFullPath, version: 1,
           onCreate: (Database database, int version) {
-            print("CategoryDBProvider. Open. onCreate.");
-          }).then((database) {
+        print("CategoryDBProvider. Open. onCreate.");
+      }).then((database) {
         db = database;
         print(
             "CategoryDBProvider. Open. database assigned. db.path: " + db.path);
@@ -90,57 +102,55 @@ class CategoryDatabaseProvider {
   }
 
   Future<bool> _checkIfTableExists() {
-    print("CategoryDBProvider. _checkIfTableExists. query: [" +this._getCheckTableQuery()+ "]");
+    print("CategoryDBProvider. _checkIfTableExists. query: [" +
+        this._getCheckTableQuery() +
+        "]");
 
     return this.db.rawQuery(this._getCheckTableQuery()).then((result) {
-        print("CategoryDBProvider. _checkIfTableExists. result:" +
-            result.toString());
-        if (result != null && result.toString().length > 0) {
-          String abcd = result.toString();
-          if (abcd.contains("$tableName")) {
-            print("CategoryDBProvider. _checkIfTableExists. returning true.");
-            return new Future.value(true);
-          } else {
-            print("CategoryDBProvider. _checkIfTableExists. returning false.");
-            return new Future.value(false);
-          }
+      print("CategoryDBProvider. _checkIfTableExists. result:" +
+          result.toString());
+      if (result != null && result.toString().length > 0) {
+        String abcd = result.toString();
+        if (abcd.contains("$tableName")) {
+          print("CategoryDBProvider. _checkIfTableExists. returning true.");
+          return new Future.value(true);
         } else {
           print("CategoryDBProvider. _checkIfTableExists. returning false.");
           return new Future.value(false);
         }
-      });
+      } else {
+        print("CategoryDBProvider. _checkIfTableExists. returning false.");
+        return new Future.value(false);
+      }
+    });
   }
 
   Future<bool> createTable() {
     print("CategoryDBProvider. CreateTable.");
 
-          return this
-              .db
-              .execute(this._getCreateTableQuery().toString())
-              .then((one) {
-            print(
-                "CategoryDBProvider. createTable. Create table Successful. Create Query: " +
-                    this._getCreateTableQuery());
-            return new Future.value(true);
-          }).catchError((e) {
-            print("CategoryDBProvider. createTable. Error: " + e.toString());
-            return new Future.value(false);
-          });
-
+    return this.db.execute(this._getCreateTableQuery().toString()).then((one) {
+      print(
+          "CategoryDBProvider. createTable. Create table Successful. Create Query: " +
+              this._getCreateTableQuery());
+      return new Future.value(true);
+    }).catchError((e) {
+      print("CategoryDBProvider. createTable. Error: " + e.toString());
+      return new Future.value(false);
+    });
   }
 
   Future<int> _checkTableCount() {
     print("CategoryDBProvider. _checkTableCount.");
-      return this.db.rawQuery(this._getCheckTableCountQuery()).then((result) {
-        print("CategoryDBProvider. _checkTableCount. result:" +
-            result.toString());
-        if (result != null &&
-            result.toString().length > 0 &&
-            result.toString().contains(":")) {
-          String count = result.toString().split(':')[1].split('}')[0].trim();
-          int a = int.parse(count);
-          return new Future.value(a);
-          /*if (a == 0) {
+    return this.db.rawQuery(this._getCheckTableCountQuery()).then((result) {
+      print(
+          "CategoryDBProvider. _checkTableCount. result:" + result.toString());
+      if (result != null &&
+          result.toString().length > 0 &&
+          result.toString().contains(":")) {
+        String count = result.toString().split(':')[1].split('}')[0].trim();
+        int a = int.parse(count);
+        return new Future.value(a);
+        /*if (a == 0) {
             Category category = new Category();
             category.title = "UnCategorized";
             return this.insert(category).then((onValue) {
@@ -151,24 +161,24 @@ class CategoryDatabaseProvider {
           } else {
             return a;
           }*/
-        } else {
-          return  new Future.value(0);
-        }
-      }).catchError((e) {
-        print("CategoryDBProvider. _checkTableCount. Error: " + e.toString());
-        return  new Future.value(-1);
-      });
+      } else {
+        return new Future.value(0);
+      }
+    }).catchError((e) {
+      print("CategoryDBProvider. _checkTableCount. Error: " + e.toString());
+      return new Future.value(-1);
+    });
   }
 
   Future<Category> insert(Category category) {
     print("CategoryDBProvider. Insert. category: " + category.toString());
     return db.insert(tableName, category.toMap()).then((res) {
-    category.id = res;
-    print("CategoryDBProvider. Insert. Successful. " + category.toString());
-    return category;
+      category.id = res;
+      print("CategoryDBProvider. Insert. Successful. " + category.toString());
+      return category;
     }).catchError((e) {
-    print("CategoryDBProvider. Insert. UnSuccessful. Error: " + e.toString());
-    return category;
+      print("CategoryDBProvider. Insert. UnSuccessful. Error: " + e.toString());
+      return category;
     });
   }
 
@@ -231,12 +241,9 @@ class CategoryDatabaseProvider {
       print("CategoryDBProvider. getCategory. id: " + id.toString());
       return db
           .query(tableName,
-          columns: [
-            columnId,
-            columnTitle
-          ],
-          where: "$columnId = ?",
-          whereArgs: [id])
+              columns: [columnId, columnTitle],
+              where: "$columnId = ?",
+              whereArgs: [id])
           .then((result) {
         print(result.toString());
         if (result.length > 0) {
@@ -246,7 +253,8 @@ class CategoryDatabaseProvider {
         }
       });
     } else {
-      print("CategoryDBProvider. getCategory. id is null. id: " + id.toString());
+      print(
+          "CategoryDBProvider. getCategory. id is null. id: " + id.toString());
       return new Future.value(null);
     }
   }

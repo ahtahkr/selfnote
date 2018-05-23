@@ -14,7 +14,8 @@ class CategoryEditWidget extends StatefulWidget {
   }
 
   @override
-  createState() => new CategoryEditState(this._category, this._databaseFullPath);
+  createState() =>
+      new CategoryEditState(this._category, this._databaseFullPath);
 }
 
 class CategoryEditState extends State<CategoryEditWidget>
@@ -27,7 +28,8 @@ class CategoryEditState extends State<CategoryEditWidget>
   CategoryEditState(Category category, String databaseFullPath) {
     this._category = category;
     this._textEditingController = new TextEditingController();
-    this._categoryDatabaseProvider = new CategoryDatabaseProvider(databaseFullPath);
+    this._categoryDatabaseProvider =
+        new CategoryDatabaseProvider(databaseFullPath);
   }
 
   @override
@@ -40,9 +42,15 @@ class CategoryEditState extends State<CategoryEditWidget>
     );
   }
 
-  static const List<IconData> _icons = const [Icons.save, Icons.delete, Icons.cancel];
+  static const List<IconData> _icons = const [
+    Icons.save,
+    Icons.delete,
+    Icons.cancel
+  ];
   static const List<Color> _backgroundColor = const [
-    Colors.green , Colors.red, Colors.orange
+    Colors.green,
+    Colors.red,
+    Colors.orange
   ];
   Color _foregroundColor = Colors.white;
   _function(int index) {
@@ -50,14 +58,18 @@ class CategoryEditState extends State<CategoryEditWidget>
       if (index == 1) {
         this._categoryDatabaseProvider.open().then((result) {
           if (result != null && result is bool && result) {
-            this._categoryDatabaseProvider.delete(this._category.id).then((result_one) {
+            this
+                ._categoryDatabaseProvider
+                .delete(this._category.id)
+                .then((result_one) {
               if (result_one != null && result_one is int) {
                 Navigator.pop(context, result_one);
               } else {
-                print("SelfcategoryError. categoryViewState. _function. index[" +
-                    index.toString() +
-                    "] database delete failed. result_one: " +
-                    result_one.toString());
+                print(
+                    "SelfcategoryError. categoryViewState. _function. index[" +
+                        index.toString() +
+                        "] database delete failed. result_one: " +
+                        result_one.toString());
               }
             }).catchError((e) {
               print("SelfcategoryError. categoryViewState. _function. index[" +
@@ -77,19 +89,20 @@ class CategoryEditState extends State<CategoryEditWidget>
               "] database open failed (in catch). e: " +
               e.toString());
         });
-      }
-      else if (index == 0) {
-        this._category.title = this._textEditingController.value.text.toString();
+      } else if (index == 0) {
+        this._category.title =
+            this._textEditingController.value.text.toString();
         this._categoryDatabaseProvider.open().then((_bool) {
           if (_bool) {
             this._categoryDatabaseProvider.update(this._category).then((res) {
               if (res != null && res is int && res > 0) {
                 Navigator.pop(context, res);
               } else {
-                print("SelfCategoryError. CategoryEditState. _function. index[" +
-                    index.toString() +
-                    "] databaseupdate returned error. res: " +
-                    res.toString());
+                print(
+                    "SelfCategoryError. CategoryEditState. _function. index[" +
+                        index.toString() +
+                        "] databaseupdate returned error. res: " +
+                        res.toString());
               }
             }).catchError((e) {
               print("SelfCategoryError. CategoryEditState. _function. index[" +
@@ -124,13 +137,13 @@ class CategoryEditState extends State<CategoryEditWidget>
         ),
         body: new Center(
             child: new SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: new TextField(
-                maxLines: null,
-                enabled: true,
-                controller: _textEditingController,
-              ),
-            )),
+          scrollDirection: Axis.vertical,
+          child: new TextField(
+            maxLines: null,
+            enabled: true,
+            controller: _textEditingController,
+          ),
+        )),
         floatingActionButton: new Column(
             mainAxisSize: MainAxisSize.min,
             children: new List.generate(_icons.length, (int index) {

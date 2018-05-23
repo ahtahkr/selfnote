@@ -23,8 +23,7 @@ class HomePage extends State<SelfNote> {
         this.databaseDirectory = directory.path;
         this.databaseName = "selfnote.db";
 
-        this.categoryPage =
-        new CategoryWidget(
+        this.categoryPage = new CategoryWidget(
             _path.join(this.databaseDirectory, this.databaseName));
 
         this.notePage = new NoteWidget(

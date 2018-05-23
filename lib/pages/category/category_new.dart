@@ -27,7 +27,8 @@ class NewCategoryWidgetState extends State<NewCategoryWidget>
   ];
 
   NewCategoryWidgetState(String databaseFullPath) {
-    this._categoryDatabaseProvider = new CategoryDatabaseProvider(databaseFullPath);
+    this._categoryDatabaseProvider =
+        new CategoryDatabaseProvider(databaseFullPath);
     this.category = new Category();
   }
 
@@ -41,7 +42,10 @@ class NewCategoryWidgetState extends State<NewCategoryWidget>
 
     this._categoryDatabaseProvider.open().then((_bool) {
       if (_bool) {
-        this._categoryDatabaseProvider.insert(this.category).then((new_category) {
+        this
+            ._categoryDatabaseProvider
+            .insert(this.category)
+            .then((new_category) {
           print("_save" + new_category.toString());
           if (new_category.id == -1) {
             Navigator.pop(context, null);
