@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../database/note_database_provider.dart';
+import '../database/category_database_provider.dart';
+import '../database/modal/category.dart';
 import 'dart:math' as math;
 
 class NoteEditWidget extends StatefulWidget {
@@ -22,12 +24,25 @@ class NoteEditState extends State<NoteEditWidget>
   TextEditingController _textEditingController;
   AnimationController _controller;
   NoteDatabaseProvider _noteDatabaseProvider;
+  CategoryDatabaseProvider _categoryDatabaseProvider;
+  List<Category> categories;
+  Category selectedCategory;
 
   NoteEditState(Note note, String databaseFullPath) {
     this._note = note;
     this._textEditingController = new TextEditingController();
     this._noteDatabaseProvider = new NoteDatabaseProvider(databaseFullPath);
+    this._categoryDatabaseProvider =
+            new CategoryDatabaseProvider(databaseFullPath);
+    this.categories = new List();
   }
+    _categorySelected(Category category) {
+        setState(() {
+            this.selectedCategory = category;
+            print('categorySelected a: ' + category.toString());
+            print('categorySelected b: ' + this.selectedCategory.toString());
+          });
+      }
 
   @override
   void initState() {
@@ -37,6 +52,24 @@ class NoteEditState extends State<NoteEditWidget>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+        this._categoryDatabaseProvider.initialSetUp().then((res) {
+           print('initial setup complete.');
+           this._categoryDatabaseProvider.get().then((res_1) {
+               print('get complete. ' + res_1.toString());
+                setState(() {
+                    this.categories = res_1;
+                  });
+               for(int a = 0; a < this.categories.length; a++) {
+                 if (this.categories[a].id == this._note.categoryId) {
+                   setState(() {
+                     this.selectedCategory = this.categories[a];
+                   });
+                   print('NewNoteWidgetState initState assigning selectedCategory. ' +
+                       this.selectedCategory.toString());
+                 }
+               }
+              });
+          });
   }
 
   static const List<IconData> _icons = const [Icons.save, Icons.cancel];
@@ -49,6 +82,7 @@ class NoteEditState extends State<NoteEditWidget>
     if (index != null) {
       if (index == 0) {
         this._note.message = this._textEditingController.value.text.toString();
+        this._note.categoryId = this.selectedCategory.id;
         this._noteDatabaseProvider.open().then((_bool) {
           if (_bool) {
             this._noteDatabaseProvider.update(this._note).then((res) {
@@ -91,15 +125,25 @@ class NoteEditState extends State<NoteEditWidget>
           title: new Text("Note Edit"),
           automaticallyImplyLeading: false,
         ),
-        body: new Center(
-            child: new SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: new TextField(
-            maxLines: null,
-            enabled: true,
-            controller: _textEditingController,
-          ),
-        )),
+        body: new Column(children: <Widget>[
+          new DropdownButton(
+              isDense: true,
+              value: this.selectedCategory,
+              items: this.categories.map((Category category) {
+                return new DropdownMenuItem(
+                    value: category, child: new Text(category.title));
+              }).toList(),
+              onChanged: (Category category) {
+                _categorySelected(category);
+              }),
+          new SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: new TextField(
+                maxLines: null,
+                autofocus: true,
+                controller: _textEditingController,
+              ))
+        ]),
         floatingActionButton: new Column(
             mainAxisSize: MainAxisSize.min,
             children: new List.generate(_icons.length, (int index) {
