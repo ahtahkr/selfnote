@@ -46,6 +46,7 @@ class NoteWidgetState extends State<NoteWidget> {
                 builder: (context) => new NoteView(
                     note, this.noteDatabaseProvider.databaseFullPath)))
         .then((result) {
+      print('NoteWidgetState. _newView. result:' + result.toString());
       if (result != null && result is int && result > 0) {
         this.noteDatabaseProvider.getNote(result).then((res) {
           if (res != null && res is Note && res.message.length > 0) {
@@ -82,14 +83,6 @@ class NoteWidgetState extends State<NoteWidget> {
                     ".");
           }
         }).catchError((e) {});
-      } else if (result == -1) {
-        /* Cancelled in NoteView */
-      } else {
-        print(
-            "SelfNoteError. NoteWidgetState. _noteView. Invalid result received. result: " +
-                result +
-                ". note: " +
-                note.toString());
       }
     });
   }
