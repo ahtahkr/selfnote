@@ -21,6 +21,7 @@ class NewNoteWidgetState extends State<NewNoteWidget>
   Category selectedCategory;
   AnimationController _controller;
   Note note;
+  int characterCount;
   static const List<IconData> icons = const [Icons.save, Icons.cancel];
   static const List<Color> _backgroundColor = const [
     Colors.green,
@@ -32,6 +33,7 @@ class NewNoteWidgetState extends State<NewNoteWidget>
         new CategoryDatabaseProvider(databaseFullPath);
     this.note = new Note();
     this.categories = new List();
+    onChange();
   }
   void _cancel() {
     Navigator.pop(context, false);
@@ -68,6 +70,7 @@ class NewNoteWidgetState extends State<NewNoteWidget>
     print('NewNoteWidgetState initState start.');
     super.initState();
     _textEditController = new TextEditingController();
+    _textEditController.addListener(onChange);
     _controller = new AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -85,14 +88,6 @@ class NewNoteWidgetState extends State<NewNoteWidget>
       });
     });
     print('NewNoteWidgetState initState end.');
-  }
-
-  _dismissKeyboard() {
-    if (MediaQuery.of(context).viewInsets.bottom != 0) {
-      String mes = this._textEditController.value.text;
-      FocusScope.of(context).requestFocus(new FocusNode());
-      this._textEditController.text = mes;
-    }
   }
 
   _function(int index) {
@@ -114,45 +109,63 @@ class NewNoteWidgetState extends State<NewNoteWidget>
     });
   }
 
+  void onChange() {
+    setState(() {
+      characterCount = 1500 - _textEditController.text.toString().length;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     print('NewNoteWidgetState build start.');
     Color foregroundColor = Colors.white;
-    InputDecoration inputDecoration;
-    if (note.message != null && note.message.length > 0) {
-      this._textEditController.text = note.message.toString();
-    } else {
-      inputDecoration = new InputDecoration(hintText: 'Enter Description');
-    }
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text("This is the new note widget."),
-          automaticallyImplyLeading: false,
+          title: new Text('New Note'),
         ),
-        body: new Column(children: <Widget>[
-          new ListTile(
-            leading: const Icon(Icons.category),
-          title: const Text('Category'),
-          trailing:
-          new DropdownButton(
-              isDense: true,
-              value: this.selectedCategory,
-              items: this.categories.map((Category category) {
-                return new DropdownMenuItem(
-                    value: category, child: new Text(category.title));
-              }).toList(),
-              onChanged: (Category category) {
-                _categorySelected(category);
-              })),
-          new SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: new TextField(
-                decoration: inputDecoration,
-                maxLines: null,
-                autofocus: true,
-                controller: _textEditController,
-              ))
-        ]),
+        body: new Column(
+          children: <Widget>[
+            new Row(
+              children: <Widget>[
+                new Expanded(
+                    child: new DropdownButton(
+                        isDense: true,
+                        value: this.selectedCategory,
+                        items: this.categories.map((Category category) {
+                          return new DropdownMenuItem(
+                              value: category, child: new Text(category.title));
+                        }).toList(),
+                        onChanged: (Category category) {
+                          _categorySelected(category);
+                        })),
+                new Expanded(
+                    child: new Chip(
+                  avatar: new CircleAvatar(
+                    child: new Text('#'),
+                  ),
+                  label:
+                      new Text(characterCount.toString() + ' characters left.'),
+                ))
+              ],
+            ),
+            new Expanded(
+                child: new Column(
+              children: <Widget>[
+                new Expanded(
+                    child: new Padding(
+                        padding: new EdgeInsets.fromLTRB(2.0, 2.0, 2.0, 25.0),
+                        child: new TextField(
+                          maxLines: null,
+                          maxLength: 1500,
+                          controller: _textEditController,
+                          decoration: new InputDecoration(
+                            hintText: 'Enter Description',
+                          ),
+                        )))
+              ],
+            ))
+          ],
+        ),
         floatingActionButton: new Column(
             mainAxisSize: MainAxisSize.min,
             children: new List.generate(icons.length, (int index) {
