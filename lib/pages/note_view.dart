@@ -139,13 +139,10 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
           children: <Widget>[
             new Row(children: <Widget>[
               new Chip(
-                avatar: new CircleAvatar(
-                  child: new Icon(Icons.category),
-                ),
                 label: new Text(((this._category != null &&
                         this._category is Category &&
                         this._category.title.length > 0)
-                    ? this._category.title
+                    ? 'Category: ' + this._category.title
                     : '')),
               )
             ]),

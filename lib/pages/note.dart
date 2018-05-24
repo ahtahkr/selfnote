@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../database/note_database_provider.dart';
 import './new_note.dart';
 import './note_view.dart';
+import 'dart:math' as math;
+import '../Utility.dart';
 
 class NoteWidget extends StatefulWidget {
   final String databaseFullPath;
@@ -122,20 +124,19 @@ class NoteWidgetState extends State<NoteWidget> {
   }
 
   Widget _buildRow(Note _note, BoxDecoration boxDecoration) {
-    return new Container(
-        decoration: boxDecoration,
-        child: new ListTile(
-          onTap: () {
-            this._noteView(_note);
-          },
-          dense: true,
-          title: new Text(
-            ((_note.message != null && _note.message.isNotEmpty)
-                ? _note.message
-                : "Undefined"),
-            maxLines: 5,
-          ),
-        ));
+    return new GestureDetector(
+      child: new ListTile(
+        isThreeLine: true,
+        dense: true,
+        leading: new ExcludeSemantics(child: new CircleAvatar(child: new Text(_note.message[0]))),
+        title: new Text(_note.message.toString(), maxLines: 2),
+        subtitle: new Text('Updated: ' + Utility.dateTimeHumanReadable(_note.updatedOn)),
+        //trailing: _showIcons ? new Icon(Icons.info, color: Theme.of(context).disabledColor) : null,
+      ),
+        onTap: () {
+          this._noteView(_note);
+        }
+    );
   }
 
   @override
