@@ -105,10 +105,6 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
                     e.toString());
           });
         }
-      } else {
-        print(
-            "SelfNoteError. NoteViewState. _function. invalid result received from navigator. result: " +
-                res.toString());
       }
     }).catchError((e) {});
   }
