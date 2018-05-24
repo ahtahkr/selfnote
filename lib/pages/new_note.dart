@@ -106,7 +106,6 @@ class NewNoteWidgetState extends State<NewNoteWidget>
               children: <Widget>[
                 new Expanded(
                     child: new DropdownButton(
-                        isDense: true,
                         value: this.selectedCategory,
                         items: this.categories.map((Category category) {
                           return new DropdownMenuItem(
