@@ -102,6 +102,7 @@ class NoteWidgetState extends State<NoteWidget> {
                 builder: (context) => new NewNoteWidget(
                     this.noteDatabaseProvider.databaseFullPath)))
         .then((result) {
+      print('NoteWidgetState. _newNote. result:' + result.toString());
       if (result != null && result is Note && result.message.length > 0) {
         if (this.notes.length > 0) {
           bool contains = false;
