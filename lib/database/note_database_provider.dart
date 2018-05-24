@@ -205,6 +205,7 @@ class NoteDatabaseProvider {
 
   Future<int> update(Note note) {
     print("NoteDBProvider. update. got: " + note.toString());
+    note.updatedOn = new DateTime.now();
     return db.update(tableNote, note.toMap(),
         where: "$columnId = ?", whereArgs: [note.id]).then((res) {
       print("NoteDBProvider. update. after update: " + res.toString());
