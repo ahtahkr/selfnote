@@ -32,6 +32,9 @@ class NoteWidgetState extends State<NoteWidget> {
             this.noteDatabaseProvider.get().then((res) {
               setState(() {
                 this.notes = res;
+                this.notes.sort((noteOne, noteTwo) =>
+                    noteTwo.updatedOn.compareTo(noteOne.updatedOn)
+                );
               });
             });
           }
@@ -61,7 +64,9 @@ class NoteWidgetState extends State<NoteWidget> {
                     "] found in this.notes list.");
                 _found = true;
                 setState(() {
-                  this.notes[a].message = res.message;
+                  this.notes[a].message = res.message;this.notes.sort((noteOne, noteTwo) =>
+                      noteTwo.updatedOn.compareTo(noteOne.updatedOn)
+                  );
                 });
               }
             }
@@ -85,6 +90,12 @@ class NoteWidgetState extends State<NoteWidget> {
                     ".");
           }
         }).catchError((e) {});
+      } else {
+        setState(() {
+        this.notes.sort((noteOne, noteTwo) =>
+            noteTwo.updatedOn.compareTo(noteOne.updatedOn)
+        );
+        });
       }
     });
   }
@@ -105,6 +116,9 @@ class NoteWidgetState extends State<NoteWidget> {
             if (this.notes[a].id == result.id) {
               setState(() {
                 this.notes[a].message = result.message;
+                this.notes.sort((noteOne, noteTwo) =>
+                    noteTwo.updatedOn.compareTo(noteOne.updatedOn)
+                );
               });
               contains = true;
             }
