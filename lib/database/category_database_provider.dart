@@ -8,16 +8,19 @@ class CategoryDatabaseProvider {
 
   CategoryDatabaseProvider(String _databaseFullPath) {
     this.databaseFullPath = _databaseFullPath;
-//    this.initialSetUp().then((res) {
-//      print('initial setup complete.');
-//      this.get().then((res_1) {
-//        print('get complete');
-//        for (int a = 0; a < res_1.length; a++) {
-//          print(res_1[a].toString());
-//        }
-//      });
-//    });
   }
+
+  /*
+  this.initialSetUp().then((res) {
+    print('initial setup complete.');
+    this.get().then((res_1) {
+      print('get complete');
+      for (int a = 0; a < res_1.length; a++) {
+        print(res_1[a].toString());
+      }
+    });
+  });
+  */
 
   Future<bool> initialSetUp() {
     print("CategoryDBProvider. initialSetUp.");
@@ -150,17 +153,6 @@ class CategoryDatabaseProvider {
         String count = result.toString().split(':')[1].split('}')[0].trim();
         int a = int.parse(count);
         return new Future.value(a);
-        /*if (a == 0) {
-            Category category = new Category();
-            category.title = "UnCategorized";
-            return this.insert(category).then((onValue) {
-              return 1;
-            }).catchError((e) {
-              return -1;
-            });
-          } else {
-            return a;
-          }*/
       } else {
         return new Future.value(0);
       }

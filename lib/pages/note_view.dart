@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../database/note_database_provider.dart';
 import '../database/category_database_provider.dart';
 import '../database/modal/category.dart';
-import 'dart:math' as math;
 import './note_edit.dart';
 
 class NoteView extends StatefulWidget {
@@ -20,7 +19,6 @@ class NoteView extends StatefulWidget {
 class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
   Note _note;
   TextEditingController _textEditingController;
-  AnimationController _controller;
   NoteDatabaseProvider _noteDatabaseProvider;
   CategoryDatabaseProvider _categoryDatabaseProvider;
   Category _category;
@@ -38,10 +36,6 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
     print('NoteViewState initState start.');
     super.initState();
     this._textEditingController.text = this._note.message.toString();
-    this._controller = new AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
     this._categoryDatabaseProvider.initialSetUp().then((res) {
       print('initial setup complete.');
       _getCategory();
@@ -60,17 +54,6 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
     }).catchError((e) {});
   }
 
-  static const List<IconData> _icons = const [
-    Icons.edit,
-    Icons.delete,
-    Icons.cancel
-  ];
-  static const List<Color> _backgroundColor = const [
-    Colors.blue,
-    Colors.red,
-    Colors.orange
-  ];
-  Color _foregroundColor = Colors.white;
   _editNote() {
     Navigator
         .push(
@@ -83,11 +66,11 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
         if (res == -1) {/* If cancelled in NoteEdit, then do nothing. */} else {
           this._noteDatabaseProvider.open().then((result) {
             if (result != null && result is bool && result) {
-              this._noteDatabaseProvider.getNote(res).then((result_one) {
+              this._noteDatabaseProvider.getNote(res).then((resultOne) {
                 setState(() {
-                  this._note = result_one;
+                  this._note = resultOne;
                   this._getCategory();
-                  this._textEditingController.text = result_one.message;
+                  this._textEditingController.text = resultOne.message;
                 });
               }).catchError((e) {
                 print(
@@ -112,13 +95,13 @@ class NoteViewState extends State<NoteView> with TickerProviderStateMixin {
   _deleteNote() {
     this._noteDatabaseProvider.open().then((result) {
       if (result != null && result is bool && result) {
-        this._noteDatabaseProvider.delete(this._note.id).then((result_one) {
-          if (result_one != null && result_one is int) {
-            Navigator.pop(context, result_one);
+        this._noteDatabaseProvider.delete(this._note.id).then((resultOne) {
+          if (resultOne != null && resultOne is int) {
+            Navigator.pop(context, resultOne);
           } else {
             print(
                 "SelfNoteError. NoteViewState. _deleteNote. database delete failed. result_one: " +
-                    result_one.toString());
+                    resultOne.toString());
           }
         }).catchError((e) {
           print(

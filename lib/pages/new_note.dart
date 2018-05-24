@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../database/note_database_provider.dart';
 import '../database/category_database_provider.dart';
 import '../database/modal/category.dart';
-import 'dart:math' as math;
 
 class NewNoteWidget extends StatefulWidget {
   final String _databaseFullPath;
@@ -19,14 +18,8 @@ class NewNoteWidgetState extends State<NewNoteWidget>
   CategoryDatabaseProvider _categoryDatabaseProvider;
   List<Category> categories;
   Category selectedCategory;
-  AnimationController _controller;
   Note note;
   int characterCount;
-  static const List<IconData> icons = const [Icons.save, Icons.cancel];
-  static const List<Color> _backgroundColor = const [
-    Colors.green,
-    Colors.orange
-  ];
   NewNoteWidgetState(String databaseFullPath) {
     this._noteDatabaseProvider = new NoteDatabaseProvider(databaseFullPath);
     this._categoryDatabaseProvider =
@@ -35,9 +28,9 @@ class NewNoteWidgetState extends State<NewNoteWidget>
     this.categories = new List();
     this.characterCount = 1500;
   }
-  void _cancel() {
+  /*void _cancel() {
     Navigator.pop(context, false);
-  }
+  }*/
 
   void _save() {
     print(_textEditController.value.text.toString());
@@ -71,10 +64,6 @@ class NewNoteWidgetState extends State<NewNoteWidget>
     super.initState();
     _textEditController = new TextEditingController();
     _textEditController.addListener(onChange);
-    _controller = new AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
     this._categoryDatabaseProvider.initialSetUp().then((res) {
       print('initial setup complete.');
       this._categoryDatabaseProvider.get().then((res_1) {
@@ -88,17 +77,6 @@ class NewNoteWidgetState extends State<NewNoteWidget>
       });
     });
     print('NewNoteWidgetState initState end.');
-  }
-
-  _function(int index) {
-    if (index != null) {
-      if (index == 0) {
-        this._save();
-      } else if (index == 1) {
-        this._cancel();
-      }
-    }
-    print(index);
   }
 
   _categorySelected(Category category) {
@@ -118,7 +96,6 @@ class NewNoteWidgetState extends State<NewNoteWidget>
   @override
   Widget build(BuildContext context) {
     print('NewNoteWidgetState build start.');
-    Color foregroundColor = Colors.white;
     return new Scaffold(
         appBar: new AppBar(
           title: new Text('New Note'),

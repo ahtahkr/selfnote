@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../database/note_database_provider.dart';
 import '../database/category_database_provider.dart';
 import '../database/modal/category.dart';
-import 'dart:math' as math;
 
 class NoteEditWidget extends StatefulWidget {
   final Note _note;

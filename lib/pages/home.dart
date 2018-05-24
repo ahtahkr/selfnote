@@ -4,18 +4,13 @@ import './note.dart';
 import './category.dart';
 import 'package:path/path.dart' as _path;
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import 'dart:async';
-
-import '../database/category_database_provider.dart';
 
 class HomePage extends State<SelfNote> {
   var ok;
   CategoryWidget categoryPage;
   NoteWidget notePage;
   String title, databaseDirectory, databaseName;
-
-  CategoryDatabaseProvider _categoryDatabaseProvider;
 
   Future<bool> setPages() {
     return new Future<bool>(() {

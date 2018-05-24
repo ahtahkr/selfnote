@@ -45,12 +45,12 @@ class NewCategoryWidgetState extends State<NewCategoryWidget>
         this
             ._categoryDatabaseProvider
             .insert(this.category)
-            .then((new_category) {
-          print("_save" + new_category.toString());
-          if (new_category.id == -1) {
+            .then((newCategory) {
+          print("_save" + newCategory.toString());
+          if (newCategory.id == -1) {
             Navigator.pop(context, null);
           } else {
-            Navigator.pop(context, new_category);
+            Navigator.pop(context, newCategory);
           }
         });
       } else {

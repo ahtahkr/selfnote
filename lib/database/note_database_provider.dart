@@ -1,6 +1,5 @@
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
-import 'dart:convert';
 
 final String tableNote = "note";
 final String columnId = "id";
@@ -47,8 +46,7 @@ class Note {
   }
 
   Note.fromMap(Map map) {
-    //print("Note. from Map.");
-    //map.forEach((k, v) => print("Note. from Map. " + k + ":" + v.toString()));
+    /*map.forEach((k, v) => print("Note. from Map. " + k + ":" + v.toString()));*/
     id = map[columnId];
     message = map[columnMessage];
     createdOn = DateTime.parse(map[columnCreatedOn]);
@@ -236,9 +234,9 @@ class NoteDatabaseProvider {
           return note;
         });
       } else {
-        return this.insert(note).then((res_one) {
-          print("NoteDBProvider. insertUpdate. insert: " + res_one.toString());
-          return res_one;
+        return this.insert(note).then((resOne) {
+          print("NoteDBProvider. insertUpdate. insert: " + resOne.toString());
+          return resOne;
         }).catchError((e) {
           print(e.toString());
           return null;
