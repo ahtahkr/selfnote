@@ -37,8 +37,7 @@ class NoteWidgetState extends State<NoteWidget> {
             this.noteDatabaseProvider.get().then((res) {
               setState(() {
                 this.notes = res;
-                this.notes.sort((noteOne, noteTwo) =>
-                    noteTwo.updatedOn.compareTo(noteOne.updatedOn));
+                this._sortNotes(0);
               });
               this.noteDatabaseProvider.db.close().then((onValue) {
                 this.categoryDatabaseProvider.initialSetUp().then((res) {
@@ -59,7 +58,7 @@ class NoteWidgetState extends State<NoteWidget> {
     });
   }
 
-  String _getCategoryFirstChar(int id) {
+  _getCategoryFirstChar(int id) {
     print('_getCategoryFirstChar. ' +
         id.toString() +
         ' : ' +
@@ -107,8 +106,7 @@ class NoteWidgetState extends State<NoteWidget> {
                 _found = true;
                 setState(() {
                   this.notes[a].message = res.message;
-                  this.notes.sort((noteOne, noteTwo) =>
-                      noteTwo.updatedOn.compareTo(noteOne.updatedOn));
+                  this._sortNotes(0);
                 });
               }
             }
@@ -134,11 +132,22 @@ class NoteWidgetState extends State<NoteWidget> {
         }).catchError((e) {});
       } else {
         setState(() {
-          this.notes.sort((noteOne, noteTwo) =>
-              noteTwo.updatedOn.compareTo(noteOne.updatedOn));
+
         });
       }
     });
+  }
+
+  _sortNotes(int index) {
+    if (index != null && index is int && index >= 0) {
+      if (index == 0) {
+        this.notes.sort((noteOne, noteTwo) =>
+            noteTwo.updatedOn.compareTo(noteOne.updatedOn));
+      } else if (index == 1) {
+        this.notes.sort((noteOne, noteTwo) =>
+            noteTwo.categoryId.compareTo(noteOne.categoryId));
+      }
+    }
   }
 
   void _newNote() {
@@ -157,8 +166,7 @@ class NoteWidgetState extends State<NoteWidget> {
             if (this.notes[a].id == result.id) {
               setState(() {
                 this.notes[a].message = result.message;
-                this.notes.sort((noteOne, noteTwo) =>
-                    noteTwo.updatedOn.compareTo(noteOne.updatedOn));
+                this._sortNotes(0);
               });
               contains = true;
             }
