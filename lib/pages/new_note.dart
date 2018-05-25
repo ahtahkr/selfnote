@@ -114,14 +114,6 @@ class NewNoteWidgetState extends State<NewNoteWidget>
                         onChanged: (Category category) {
                           _categorySelected(category);
                         })),
-                new Expanded(
-                    child: new Chip(
-                  avatar: new CircleAvatar(
-                    child: new Text('#'),
-                  ),
-                  label:
-                      new Text(characterCount.toString() + ' characters left.'),
-                ))
               ],
             ),
             new Expanded(
@@ -132,7 +124,6 @@ class NewNoteWidgetState extends State<NewNoteWidget>
                         padding: new EdgeInsets.fromLTRB(2.0, 2.0, 2.0, 25.0),
                         child: new TextField(
                           maxLines: null,
-                          maxLength: 1500,
                           controller: _textEditController,
                           decoration: new InputDecoration(
                             hintText: 'Enter Description',
