@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../database/note_database_provider.dart';
+import '../database/category_database_provider.dart';
 import './new_note.dart';
 import './note_view.dart';
-import 'dart:math' as math;
 import '../Utility.dart';
+import '../database/modal/category.dart';
 
 class NoteWidget extends StatefulWidget {
   final String databaseFullPath;
@@ -18,9 +19,13 @@ class NoteWidget extends StatefulWidget {
 class NoteWidgetState extends State<NoteWidget> {
   List<Note> notes = new List();
   NoteDatabaseProvider noteDatabaseProvider;
+  CategoryDatabaseProvider categoryDatabaseProvider;
+  List<Category> categories;
 
   NoteWidgetState(String _databaseFullPath)
-      : this.noteDatabaseProvider = new NoteDatabaseProvider(_databaseFullPath);
+      : this.noteDatabaseProvider = new NoteDatabaseProvider(_databaseFullPath),
+        this.categoryDatabaseProvider =
+            new CategoryDatabaseProvider(_databaseFullPath);
 
   @override
   void initState() {
@@ -33,14 +38,43 @@ class NoteWidgetState extends State<NoteWidget> {
               setState(() {
                 this.notes = res;
                 this.notes.sort((noteOne, noteTwo) =>
-                    noteTwo.updatedOn.compareTo(noteOne.updatedOn)
-                );
+                    noteTwo.updatedOn.compareTo(noteOne.updatedOn));
+              });
+              this.noteDatabaseProvider.db.close().then((onValue) {
+                this.categoryDatabaseProvider.initialSetUp().then((res) {
+                  print('initial setup complete.');
+                  this.categoryDatabaseProvider.get().then((res_1) {
+                    print('get complete. ' + res_1.toString());
+                    setState(() {
+                      this.categories = res_1;
+                    });
+                    this.categoryDatabaseProvider.db.close();
+                  });
+                });
               });
             });
           }
         });
       }
     });
+  }
+
+  _getCategoryFirstChar(int id) {
+    print('_getCategoryFirstChar');
+    print(this.categories.toString() + " : " + id.toString());
+    if (this.categories != null &&
+        this.categories is List<Category> &&
+        this.categories.length > 0 &&
+        id != null &&
+        id > 0) {
+      for (int a = 0; a < this.categories.length; a++) {
+        if (this.categories[a].id == id) {
+          return this.categories[a].title.toString()[0].toUpperCase();
+        }
+      }
+    } else {
+      return '#';
+    }
   }
 
   void _noteView(Note note) {
@@ -64,9 +98,9 @@ class NoteWidgetState extends State<NoteWidget> {
                     "] found in this.notes list.");
                 _found = true;
                 setState(() {
-                  this.notes[a].message = res.message;this.notes.sort((noteOne, noteTwo) =>
-                      noteTwo.updatedOn.compareTo(noteOne.updatedOn)
-                  );
+                  this.notes[a].message = res.message;
+                  this.notes.sort((noteOne, noteTwo) =>
+                      noteTwo.updatedOn.compareTo(noteOne.updatedOn));
                 });
               }
             }
@@ -92,9 +126,8 @@ class NoteWidgetState extends State<NoteWidget> {
         }).catchError((e) {});
       } else {
         setState(() {
-        this.notes.sort((noteOne, noteTwo) =>
-            noteTwo.updatedOn.compareTo(noteOne.updatedOn)
-        );
+          this.notes.sort((noteOne, noteTwo) =>
+              noteTwo.updatedOn.compareTo(noteOne.updatedOn));
         });
       }
     });
@@ -117,8 +150,7 @@ class NoteWidgetState extends State<NoteWidget> {
               setState(() {
                 this.notes[a].message = result.message;
                 this.notes.sort((noteOne, noteTwo) =>
-                    noteTwo.updatedOn.compareTo(noteOne.updatedOn)
-                );
+                    noteTwo.updatedOn.compareTo(noteOne.updatedOn));
               });
               contains = true;
             }
@@ -139,18 +171,21 @@ class NoteWidgetState extends State<NoteWidget> {
 
   Widget _buildRow(Note _note, BoxDecoration boxDecoration) {
     return new GestureDetector(
-      child: new ListTile(
-        isThreeLine: true,
-        dense: true,
-        leading: new ExcludeSemantics(child: new CircleAvatar(child: new Text(_note.message[0]))),
-        title: new Text(_note.message.toString(), maxLines: 2),
-        subtitle: new Text('Updated: ' + Utility.dateTimeHumanReadable(_note.updatedOn)),
-        //trailing: _showIcons ? new Icon(Icons.info, color: Theme.of(context).disabledColor) : null,
-      ),
+        child: new ListTile(
+          isThreeLine: true,
+          dense: true,
+          leading: new ExcludeSemantics(
+              child: new CircleAvatar(
+                  child:
+                      new Text(this._getCategoryFirstChar(_note.categoryId)))),
+          title: new Text(_note.message.toString(), maxLines: 2),
+          subtitle: new Text(
+              'Updated: ' + Utility.dateTimeHumanReadable(_note.updatedOn)),
+          //trailing: _showIcons ? new Icon(Icons.info, color: Theme.of(context).disabledColor) : null,
+        ),
         onTap: () {
           this._noteView(_note);
-        }
-    );
+        });
   }
 
   @override
