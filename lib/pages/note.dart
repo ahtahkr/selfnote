@@ -59,18 +59,26 @@ class NoteWidgetState extends State<NoteWidget> {
     });
   }
 
-  _getCategoryFirstChar(int id) {
-    print('_getCategoryFirstChar');
-    print(this.categories.toString() + " : " + id.toString());
+  String _getCategoryFirstChar(int id) {
+    print('_getCategoryFirstChar. ' +
+        id.toString() +
+        ' : ' +
+        this.categories.toString());
     if (this.categories != null &&
         this.categories is List<Category> &&
         this.categories.length > 0 &&
         id != null &&
+        id is int &&
         id > 0) {
-      for (int a = 0; a < this.categories.length; a++) {
+      bool _found = false;
+      int a;
+      for (a = 0; a < this.categories.length; a++) {
         if (this.categories[a].id == id) {
           return this.categories[a].title.toString()[0].toUpperCase();
         }
+      }
+      if (a >= this.categories.length && !_found) {
+        return '#';
       }
     } else {
       return '#';
